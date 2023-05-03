@@ -18,7 +18,6 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private static int counter = 0;
     UserStorageImpl userStorage;
     UserMapper userMapper;
     UserListMapper userListMapper;
@@ -28,7 +27,6 @@ public class UserServiceImpl implements UserService {
         if (userStorage.validateEmail(user.getEmail())) {
             throw new EmailExistException(String.format("Пользователь с email %s уже существует", user.getEmail()));
         }
-        user.setId(++counter);
         User saveUser = userStorage.createUser(userMapper.toUserModel(user));
         log.info("Пользователь создан");
         return userMapper.toUserDto(saveUser);

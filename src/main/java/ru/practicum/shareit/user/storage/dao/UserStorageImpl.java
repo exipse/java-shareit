@@ -12,10 +12,12 @@ public class UserStorageImpl implements UserStorage {
 
     private Map<Integer, User> storage = new HashMap<>();
     private Set<String> emails = new HashSet();
+    private int counter = 0;
 
 
     @Override
     public User createUser(User user) {
+        user.setId(++counter);
         storage.put(user.getId(), user);
         emails.add(user.getEmail());
         return user;
