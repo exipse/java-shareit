@@ -3,7 +3,6 @@ package ru.practicum.shareit.user.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.EmailExistException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserListMapper;
 import ru.practicum.shareit.user.mapper.UserMapper;
