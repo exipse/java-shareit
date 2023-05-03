@@ -18,15 +18,12 @@ import java.util.Optional;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    UserStorageImpl userStorage;
-    UserMapper userMapper;
-    UserListMapper userListMapper;
+    private final UserStorageImpl userStorage;
+    private final UserMapper userMapper;
+    private final UserListMapper userListMapper;
 
     @Override
     public UserDto createUser(UserDto user) {
-        if (userStorage.validateEmail(user.getEmail())) {
-            throw new EmailExistException(String.format("Пользователь с email %s уже существует", user.getEmail()));
-        }
         User saveUser = userStorage.createUser(userMapper.toUserModel(user));
         log.info("Пользователь создан");
         return userMapper.toUserDto(saveUser);
@@ -35,10 +32,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(int id, UserDto user) {
         UserDto noUpdateUser = get(id);
-        if (!(noUpdateUser.getEmail().equals(user.getEmail())) &&
-                userStorage.validateEmail(user.getEmail())) {
-            throw new EmailExistException(String.format("Пользователь с email %s уже существует", user.getEmail()));
-        }
         user.setId(id);
         User updateUser = userStorage.updateUser(userMapper.toUserModel(user));
         log.info("Пользователь обновлен");

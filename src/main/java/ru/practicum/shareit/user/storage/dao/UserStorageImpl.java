@@ -1,6 +1,7 @@
 package ru.practicum.shareit.user.storage.dao;
 
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.exception.EmailExistException;
 import ru.practicum.shareit.exception.UserNoFoundException;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
@@ -10,13 +11,16 @@ import java.util.*;
 @Repository
 public class UserStorageImpl implements UserStorage {
 
-    private Map<Integer, User> storage = new HashMap<>();
-    private Set<String> emails = new HashSet();
+    private final Map<Integer, User> storage = new HashMap<>();
+    private final Set<String> emails = new HashSet();
     private int counter = 0;
 
 
     @Override
     public User createUser(User user) {
+        if (validateEmail(user.getEmail())) {
+            throw new EmailExistException(String.format("Пользователь с email %s уже существует", user.getEmail()));
+        }
         user.setId(++counter);
         storage.put(user.getId(), user);
         emails.add(user.getEmail());
@@ -26,6 +30,10 @@ public class UserStorageImpl implements UserStorage {
     @Override
     public User updateUser(User user) {
         User userInMemory = storage.get(user.getId());
+        if (!(userInMemory.getEmail().equals(user.getEmail())) &&
+                validateEmail(user.getEmail())) {
+            throw new EmailExistException(String.format("Пользователь с email %s уже существует", user.getEmail()));
+        }
         if (!(user.getName() == null)) {
             userInMemory.setName(user.getName());
         }
@@ -59,7 +67,7 @@ public class UserStorageImpl implements UserStorage {
     }
 
 
-    public boolean validateEmail(String email) {
+    private boolean validateEmail(String email) {
         return ifExistEmail(email);
     }
 

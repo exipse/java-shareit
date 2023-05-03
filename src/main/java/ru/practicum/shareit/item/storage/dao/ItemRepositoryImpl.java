@@ -9,7 +9,7 @@ import java.util.*;
 @Repository
 public class ItemRepositoryImpl implements ItemRepository {
 
-    Map<Integer, Item> usersItems = new HashMap<>();
+    private final Map<Integer, Item> usersItems = new HashMap<>();
     private static int counter = 0;
 
     @Override
@@ -31,7 +31,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public ArrayList<Item> getAllItems() {
+    public List<Item> getAllItems() {
         return new ArrayList<>(usersItems.values());
     }
 

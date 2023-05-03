@@ -14,7 +14,7 @@ public interface ItemRepository {
 
     Optional<Item> getById(int id);
 
-    ArrayList<Item> getAllItems();
+    List<Item> getAllItems();
 
     List<Item> seachAll(String text);
 }

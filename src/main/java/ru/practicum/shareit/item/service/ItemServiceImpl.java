@@ -13,7 +13,6 @@ import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserStorage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -23,17 +22,17 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ItemServiceImpl implements ItemService {
 
-    ItemRepository itemRepository;
-    UserStorage userStorage;
-    ItemMapper mapper;
-    ItemMapperList mapperList;
+    private final ItemRepository itemRepository;
+    private final UserStorage userStorage;
+    private final ItemMapper mapper;
+    private final ItemMapperList mapperList;
 
     @Override
     public ItemDto createItem(ItemDto item, int userId) {
 
         Optional<User> user = userStorage.get(userId);
         if (user.isPresent()) {
-            item.setUserId(userId);
+            item.setOwnerId(userId);
         }
         Item storageItem = itemRepository.createItemByUser(mapper.toItemModel(item));
         log.info("Вещь сохранена");
@@ -43,7 +42,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto updateItem(int itemId, int userId, ItemDto item) {
         ItemDto itemInMemory = getById(itemId);
-        if (itemInMemory.getUserId() != userId) {
+        if (itemInMemory.getOwnerId() != userId) {
             throw new UserNoAccessException(String.format("Пользователь с id %d не может редактировать вещь с id %d",
                     userId, itemId));
         }
@@ -75,8 +74,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> getAllItemsByUser(int userId) {
-        ArrayList<Item> allItems = itemRepository.getAllItems();
-        List<Item> userItems = allItems.stream().filter(x -> x.getUserId() == userId).collect(Collectors.toList());
+        List<Item> allItems = itemRepository.getAllItems();
+        List<Item> userItems = allItems.stream().filter(x -> x.getOwnerId() == userId).collect(Collectors.toList());
         log.info(String.format("Вещь пользователя id = %s получены", userId));
         return mapperList.toItemDtoList(userItems);
     }

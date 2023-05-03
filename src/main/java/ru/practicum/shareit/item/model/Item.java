@@ -9,6 +9,6 @@ public class Item {
     private String name;
     private String description;
     private Boolean available;
-    private int userId;
+    private int ownerId;
     private String request;
 }
