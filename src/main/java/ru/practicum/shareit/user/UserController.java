@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exception.UserNoFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.validation.ValidateService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -17,10 +18,12 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final ValidateService validateService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ValidateService validateService) {
         this.userService = userService;
+        this.validateService = validateService;
     }
 
     @PostMapping
@@ -32,6 +35,7 @@ public class UserController {
     @PatchMapping("/{userId}")
     public UserDto update(@RequestBody UserDto user, @PathVariable String userId) {
         log.info("PATCH /users/{}", userId);
+        validateService.validateBeforeUpdateUser(user);
         int id = Integer.parseInt(userId);
         if (userService.get(id) == null) {
             throw new UserNoFoundException(String.format("Пользователя с id %s не существует", id));
