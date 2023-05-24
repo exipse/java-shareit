@@ -3,6 +3,8 @@ package ru.practicum.shareit.item.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.enums.Status;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.mapper.BookingShortMapper;
@@ -50,6 +52,7 @@ public class ItemServiceImpl implements ItemService {
 
 
     @Override
+    @Transactional
     public ItemDto createItem(ItemDto item, int userId) {
 
         User user = userStorage.findById(userId)
@@ -62,6 +65,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ItemDto updateItem(int itemId, int userId, ItemDto item) {
 
         Item itemFromDB = itemRepository.findById(itemId)
@@ -86,6 +90,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
     public ItemFullDto getById(int itemId, int userId) {
         User user = userStorage.findById(userId)
                 .orElseThrow(() -> new UserNoFoundException("Пользователя не существует"));
@@ -122,6 +127,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public List<ItemFullDto> getAllItemsByUser(int userId) {
         List<ItemFullDto> userItems = itemRepository.findAllByOwnerIdOrderById(userId)
                 .stream().map(itemFullMapper::itemFulltoDto).collect(Collectors.toList());
@@ -133,6 +139,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public List<ItemDto> search(String text) {
         if (text.isBlank()) {
             return Collections.EMPTY_LIST;
@@ -143,6 +150,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public CommentDto addComment(int userId, CommentDto commentDto, int itemId) {
         User user = userStorage.findById(userId)
                 .orElseThrow(() -> new UserNoFoundException("Пользователя не существует"));

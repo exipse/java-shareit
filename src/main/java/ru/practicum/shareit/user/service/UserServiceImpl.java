@@ -3,6 +3,8 @@ package ru.practicum.shareit.user.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.DBConstraintException;
 import ru.practicum.shareit.exception.UserNoFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -23,6 +25,7 @@ public class UserServiceImpl implements UserService {
     private final UserListMapper userListMapper;
 
     @Override
+    @Transactional
     public UserDto createUser(UserDto user) {
         try {
             User saveUser = userStorage.save(userMapper.toUserModel(user));
@@ -59,6 +62,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDto get(int id) {
         User user = userStorage.findById(id).orElseThrow(
                 () -> new UserNoFoundException(String.format("Пользователь по id = %s не существует", id)));
@@ -67,6 +71,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public List<UserDto> getAll() {
         List<UserDto> users = userListMapper.toUserDtoList(userStorage.findAll());
         log.info("Пользователи получены");
@@ -74,6 +79,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void delete(int userId) {
         userStorage.deleteById(userId);
         log.info(String.format("Пользователь с id = %s удален", userId));

@@ -2,6 +2,7 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.InputBookingDto;
 import ru.practicum.shareit.booking.dto.enums.Status;
@@ -37,6 +38,7 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
+    @Transactional
     public BookingDto create(int userId, InputBookingDto book) {
         userStorage.findById(userId)
                 .orElseThrow(() -> new UserNoFoundException("Пользователя не существует"));
@@ -68,6 +70,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingDto validateRequest(int userId, int bookingId, Boolean approved) {
         BookingDto booking = getInfoByBook(userId, bookingId);
         if (booking.getItem().getOwnerId() != userId) {
@@ -89,6 +92,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public BookingDto getInfoByBook(int userId, int bookingId) {
 
         userStorage.findById(userId)
@@ -105,6 +109,7 @@ public class BookingServiceImpl implements BookingService {
 
 
     @Override
+    @Transactional
     public List<BookingDto> getAllBooksByUser(int userId, String state) {
 
         User userFromDB = userMapper.toUserModel(userService.get(userId));
@@ -133,6 +138,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public List<BookingDto> getAllBooksByOwner(int userId, String state) {
 
         UserDto user = userService.get(userId);
