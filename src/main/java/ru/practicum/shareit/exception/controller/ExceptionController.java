@@ -21,19 +21,25 @@ public class ExceptionController {
 
     }
 
-    @ExceptionHandler({MethodArgumentNotValidException.class})
+    @ExceptionHandler({MethodArgumentNotValidException.class, DataTimeValidateException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(final Exception e) {
         log.error(e.getMessage());
         return new ErrorResponse(HttpStatus.BAD_REQUEST.getReasonPhrase(), "Произошла ошибка валидации.");
     }
 
+    @ExceptionHandler({ValidateException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse validationException(final RuntimeException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
+    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse validationException(final ValidateException e) {
+    public ErrorResponse noAvailable(final NoAvailableException e) {
         log.error(e.getMessage());
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.getReasonPhrase(), e.getMessage());
+        return new ErrorResponse(HttpStatus.NOT_FOUND.getReasonPhrase(), e.getMessage());
     }
 
     @ExceptionHandler
@@ -43,7 +49,21 @@ public class ExceptionController {
         return new ErrorResponse(HttpStatus.FORBIDDEN.getReasonPhrase(), e.getMessage());
     }
 
-    @ExceptionHandler({UserNoFoundException.class, ItemNoFoundException.class})
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse dbconstrainException(final DBConstraintException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse(HttpStatus.CONFLICT.getReasonPhrase(), e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse unsupported(final UnsupportedException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler({UserNoFoundException.class, ItemNoFoundException.class, BookingNoFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse notFoundException(final RuntimeException e) {
         log.error(e.getMessage());
