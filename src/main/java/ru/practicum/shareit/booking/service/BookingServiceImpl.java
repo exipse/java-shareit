@@ -30,12 +30,9 @@ public class BookingServiceImpl implements BookingService {
     private final UserStorage userStorage;
     private final ItemService itemService;
     private final ItemRepository itemRepository;
-    //private final ItemMapper itemMapper;
     private final ItemFullMapper itemFullMapper;
-
     private final UserMapper userMapper;
     private final BookingMapper bookingMapper;
-
     private final BookingRepository bookingRepository;
 
 
@@ -46,14 +43,13 @@ public class BookingServiceImpl implements BookingService {
         itemRepository.findById(book.getItemId())
                 .orElseThrow(() -> new ItemNoFoundException("Пользователя не существует"));
         if (book.getStart().isAfter(book.getEnd())
-                || book.getStart().equals(book.getEnd()))
-        {
+                || book.getStart().equals(book.getEnd())) {
             throw new DataTimeValidateException("Указано некорректное время бронирования");
         }
         User user = userMapper.toUserModel(userService.get(userId));
-       Item item =
-               itemFullMapper.itemFulltoModel(itemService.getById(book.getItemId(), userId));
-        if(item.getOwnerId() == userId){
+        Item item =
+                itemFullMapper.itemFulltoModel(itemService.getById(book.getItemId(), userId));
+        if (item.getOwnerId() == userId) {
             throw new BookingNoFoundException("Владелец вещи не может забронировать свою вещь");
         }
         if (item.getAvailable()) {
@@ -108,10 +104,9 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-//
+
     @Override
     public List<BookingDto> getAllBooksByUser(int userId, String state) {
-        //return null;
 
         User userFromDB = userMapper.toUserModel(userService.get(userId));
         LocalDateTime timeNow = LocalDateTime.now();
@@ -137,8 +132,7 @@ public class BookingServiceImpl implements BookingService {
         }
         throw new UnsupportedException(String.format("Unknown state: %s", state));
     }
-//
-//
+
     @Override
     public List<BookingDto> getAllBooksByOwner(int userId, String state) {
 
@@ -147,11 +141,11 @@ public class BookingServiceImpl implements BookingService {
 
         switch (state) {
             case "ALL":
-               List<Booking> b=  bookingRepository.findAllByBookerAll(userId);
+                List<Booking> b = bookingRepository.findAllByBookerAll(userId);
                 return bookingMapper.toBookingListDto(b);
             case "CURRENT":
                 return bookingMapper.toBookingListDto(bookingRepository
-                        .findCurrentBookingsByOwner(userId,timeNow, timeNow));
+                        .findCurrentBookingsByOwner(userId, timeNow, timeNow));
             case "PAST":
                 return bookingMapper.toBookingListDto(bookingRepository
                         .findPastBookingsByOwner(userId, timeNow));
