@@ -13,7 +13,7 @@ public interface ItemFullMapper {
 
      ItemFullDto itemFulltoDto(Item item);
 
-     Item itemFulltoModel (ItemFullDto itemFullDto);
+     Item itemFulltoModel(ItemFullDto itemFullDto);
 
      List<ItemFullDto> itemFulltoDtoList(List<Item> item);
 }
