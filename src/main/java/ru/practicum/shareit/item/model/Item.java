@@ -31,7 +31,7 @@ public class Item {
     @Column(name = "request_id")
     private int request;
 
-    @OneToMany(mappedBy = "item")
+    @Transient
     private List<Booking> booking;
 
     @OneToMany(mappedBy = "item")
