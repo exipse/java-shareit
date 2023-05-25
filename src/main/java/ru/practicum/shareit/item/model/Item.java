@@ -14,7 +14,7 @@ public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(name = "name")
     private String name;
@@ -26,12 +26,12 @@ public class Item {
     private Boolean available;
 
     @Column(name = "owner_id")
-    private int ownerId;
+    private Long ownerId;
 
     @Column(name = "request_id")
     private int request;
 
-    @Transient
+    @OneToMany(mappedBy = "item")
     private List<Booking> booking;
 
     @OneToMany(mappedBy = "item")

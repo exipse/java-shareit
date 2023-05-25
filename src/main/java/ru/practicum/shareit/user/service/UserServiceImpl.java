@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto updateUser(int id, UserDto user) {
+    public UserDto updateUser(Long id, UserDto user) {
         try {
             UserDto noUpdateUser = get(id);
             if (!(user.getName() == null)) {
@@ -62,7 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public UserDto get(int id) {
+    public UserDto get(Long id) {
         User user = userStorage.findById(id).orElseThrow(
                 () -> new UserNoFoundException(String.format("Пользователь по id = %s не существует", id)));
         log.info(String.format("Пользователь по id = %s получен", id));
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void delete(int userId) {
+    public void delete(Long userId) {
         userStorage.deleteById(userId);
         log.info(String.format("Пользователь с id = %s удален", userId));
 

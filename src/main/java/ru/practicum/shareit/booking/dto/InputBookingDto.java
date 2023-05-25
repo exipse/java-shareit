@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Data
 public class InputBookingDto {
     @NotNull
-    private int itemId;
+    private Long itemId;
 
     @NotNull
     @Future

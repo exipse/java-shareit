@@ -10,7 +10,7 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface BookingRepository extends JpaRepository<Booking, Integer> {
+public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     @Query("select b from Booking as b where b.booker = ?1 order by b.start desc")
     List<Booking> findALLUserBookings(User user);
@@ -40,7 +40,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
      * all owner
      */
     @Query("select b from Booking b join Item i on b.item.id = i.id where i.ownerId =?1 order by b.start DESC")
-    List<Booking> findAllByBookerAll(int owner);
+    List<Booking> findAllByBookerAll(long owner);
 
     /**
      * querry-current
@@ -48,7 +48,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query("select b from Booking as b join Item as i on b.item.id = i.id   " +
             "where i.ownerId =?1 and b.start <?2 and b.end >?3 " +
             "order by b.start DESC")
-    List<Booking> findCurrentBookingsByOwner(int orderId, LocalDateTime start, LocalDateTime end);
+    List<Booking> findCurrentBookingsByOwner(long orderId, LocalDateTime start, LocalDateTime end);
 
     /**
      * querry-past
@@ -56,7 +56,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query("select b from Booking as b  join Item as i on b.item.id = i.id " +
             "where i.ownerId =?1 and b.end < ?2 " +
             "order by b.start DESC")
-    List<Booking> findPastBookingsByOwner(int orderId, LocalDateTime end);
+    List<Booking> findPastBookingsByOwner(long orderId, LocalDateTime end);
 
     /**
      * querry-future
@@ -64,7 +64,7 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query("select b from Booking as b inner join Item as i on b.item.id = i.id " +
             "where i.ownerId =?1  and b.start >?2 " +
             "order by b.start DESC")
-    List<Booking> findFutureBookingsByOwner(int orderId, LocalDateTime start);
+    List<Booking> findFutureBookingsByOwner(long orderId, LocalDateTime start);
 
     /**
      * querry- +owner+ status
@@ -72,12 +72,12 @@ public interface BookingRepository extends JpaRepository<Booking, Integer> {
     @Query("select b from Booking as b inner join Item as i on b.item.id = i.id " +
             "where i.ownerId =?1 and b.status =?2 " +
             "order by b.start DESC")
-    List<Booking> findAllByBookerByStatusOwner(int orderId, Status state);
+    List<Booking> findAllByBookerByStatusOwner(long orderId, Status state);
 
     List<Booking> findAllByItemAndBookerAndStatusAndEndBefore(Item item, User user, Status state, LocalDateTime time);
 
     @Query("select b from Booking as b inner join Item as i on b.item.id = i.id " +
             "where i.id =?1 order by b.start DESC")
-    List<Booking> findAllBookingItems(int itemId);
+    List<Booking> findAllBookingItems(long itemId);
 
 }

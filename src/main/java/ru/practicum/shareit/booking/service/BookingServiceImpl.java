@@ -22,6 +22,7 @@ import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -39,7 +40,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDto create(int userId, InputBookingDto book) {
+    public BookingDto create(Long userId, InputBookingDto book) {
         userStorage.findById(userId)
                 .orElseThrow(() -> new UserNoFoundException("Пользователя не существует"));
         itemRepository.findById(book.getItemId())
@@ -51,7 +52,7 @@ public class BookingServiceImpl implements BookingService {
         User user = userMapper.toUserModel(userService.get(userId));
         Item item =
                 itemFullMapper.itemFulltoModel(itemService.getById(book.getItemId(), userId));
-        if (item.getOwnerId() == userId) {
+        if (Objects.equals(item.getOwnerId(), userId)) {
             throw new BookingNoFoundException("Владелец вещи не может забронировать свою вещь");
         }
         if (item.getAvailable()) {
@@ -71,9 +72,9 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDto validateRequest(int userId, int bookingId, Boolean approved) {
+    public BookingDto validateRequest(Long userId, Long bookingId, Boolean approved) {
         BookingDto booking = getInfoByBook(userId, bookingId);
-        if (booking.getItem().getOwnerId() != userId) {
+        if (!Objects.equals(booking.getItem().getOwnerId(), userId)) {
             throw new UserNoFoundException(
                     String.format("Пользователь id = %s не является владельцем вещи которую бронируют", userId));
         }
@@ -93,14 +94,14 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDto getInfoByBook(int userId, int bookingId) {
+    public BookingDto getInfoByBook(Long userId, Long bookingId) {
 
         userStorage.findById(userId)
                 .orElseThrow(() -> new UserNoFoundException("Пользователя не существует"));
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(
                 () -> new BookingNoFoundException(String.format("Бронирование по id = %s не существует", bookingId)));
-        if ((booking.getBooker().getId() == userId) ||
-                booking.getItem().getOwnerId() == userId) {
+        if ((Objects.equals(booking.getBooker().getId(), userId)) ||
+                Objects.equals(booking.getItem().getOwnerId(), userId)) {
             return bookingMapper.toBookingDto(booking);
         } else {
             throw new UserNoFoundException("Пользователь не является автором бронирования или владельцем");
@@ -110,7 +111,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public List<BookingDto> getAllBooksByUser(int userId, String state) {
+    public List<BookingDto> getAllBooksByUser(Long userId, String state) {
 
         User userFromDB = userMapper.toUserModel(userService.get(userId));
         LocalDateTime timeNow = LocalDateTime.now();
@@ -139,7 +140,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public List<BookingDto> getAllBooksByOwner(int userId, String state) {
+    public List<BookingDto> getAllBooksByOwner(Long userId, String state) {
 
         UserDto user = userService.get(userId);
         LocalDateTime timeNow = LocalDateTime.now();
