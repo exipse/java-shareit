@@ -53,7 +53,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDto createItem(ItemDto item, int userId) {
+    public ItemDto createItem(ItemDto item, Long userId) {
 
         User user = userStorage.findById(userId)
                 .orElseThrow(() -> new UserNoFoundException("Пользователя не существует"));
@@ -66,7 +66,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ItemDto updateItem(int itemId, int userId, ItemDto item) {
+    public ItemDto updateItem(Long itemId, Long userId, ItemDto item) {
 
         Item itemFromDB = itemRepository.findById(itemId)
                 .orElseThrow(() -> new ItemNoFoundException(String.format("Вещь по id %s не найдена", itemId)));
@@ -91,7 +91,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public ItemFullDto getById(int itemId, int userId) {
+    public ItemFullDto getById(Long itemId, Long userId) {
         User user = userStorage.findById(userId)
                 .orElseThrow(() -> new UserNoFoundException("Пользователя не существует"));
 
@@ -128,7 +128,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public List<ItemFullDto> getAllItemsByUser(int userId) {
+    public List<ItemFullDto> getAllItemsByUser(Long userId) {
         List<ItemFullDto> userItems = itemRepository.findAllByOwnerIdOrderById(userId)
                 .stream().map(itemFullMapper::itemFulltoDto).collect(Collectors.toList());
         List<ItemFullDto> fullusers = userItems.stream().map(obj -> getById(obj.getId(), obj.getOwnerId()))
@@ -151,7 +151,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public CommentDto addComment(int userId, CommentDto commentDto, int itemId) {
+    public CommentDto addComment(Long userId, CommentDto commentDto, Long itemId) {
         User user = userStorage.findById(userId)
                 .orElseThrow(() -> new UserNoFoundException("Пользователя не существует"));
 

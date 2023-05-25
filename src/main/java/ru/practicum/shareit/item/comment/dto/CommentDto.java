@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Data
 public class CommentDto {
-    int id;
+    Long id;
     @NotBlank
     String text;
     ItemDto item;

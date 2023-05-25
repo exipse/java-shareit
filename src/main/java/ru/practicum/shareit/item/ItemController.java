@@ -22,13 +22,13 @@ public class ItemController {
     private final ValidateService validateService;
 
     @PostMapping
-    public ItemDto create(@RequestBody @Valid ItemDto item, @RequestHeader("X-Sharer-User-Id") int userId) {
+    public ItemDto create(@RequestBody @Valid ItemDto item, @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("POST /items. X-Sharer-User-Id = {}", userId);
         return itemService.createItem(item, userId);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@PathVariable int itemId, @RequestHeader("X-Sharer-User-Id") int userId,
+    public ItemDto update(@PathVariable Long itemId, @RequestHeader("X-Sharer-User-Id") Long userId,
                           @RequestBody ItemDto item) {
         log.info("PATCH /items/{} X-Sharer-User-Id = {}", itemId, userId);
         validateService.validateBeforeUpdateItem(item);
@@ -36,13 +36,13 @@ public class ItemController {
     }
 
     @GetMapping("/{itemId}")
-    public ItemFullDto get(@PathVariable int itemId, @RequestHeader("X-Sharer-User-Id") int userId) {
+    public ItemFullDto get(@PathVariable Long itemId, @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("GET /items/{}", itemId);
         return itemService.getById(itemId, userId);
     }
 
     @GetMapping
-    public List<ItemFullDto> getAllItemsByUser(@RequestHeader("X-Sharer-User-Id") int userId) {
+    public List<ItemFullDto> getAllItemsByUser(@RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("GET /items  X-Sharer-User-Id = {}", userId);
         return itemService.getAllItemsByUser(userId);
     }
@@ -54,9 +54,9 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") int userId,
+    public CommentDto addComment(@RequestHeader("X-Sharer-User-Id") Long userId,
                                  @RequestBody @Valid CommentDto commentDto,
-                                 @PathVariable int itemId) {
+                                 @PathVariable Long itemId) {
         log.info("POST /items/{}/comment", itemId);
         return itemService.addComment(userId, commentDto, itemId);
     }

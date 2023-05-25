@@ -39,7 +39,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDto create(int userId, InputBookingDto book) {
+    public BookingDto create(Long userId, InputBookingDto book) {
         userStorage.findById(userId)
                 .orElseThrow(() -> new UserNoFoundException("Пользователя не существует"));
         itemRepository.findById(book.getItemId())
@@ -71,7 +71,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDto validateRequest(int userId, int bookingId, Boolean approved) {
+    public BookingDto validateRequest(Long userId, Long bookingId, Boolean approved) {
         BookingDto booking = getInfoByBook(userId, bookingId);
         if (booking.getItem().getOwnerId() != userId) {
             throw new UserNoFoundException(
@@ -93,7 +93,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDto getInfoByBook(int userId, int bookingId) {
+    public BookingDto getInfoByBook(Long userId, Long bookingId) {
 
         userStorage.findById(userId)
                 .orElseThrow(() -> new UserNoFoundException("Пользователя не существует"));
@@ -110,7 +110,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public List<BookingDto> getAllBooksByUser(int userId, String state) {
+    public List<BookingDto> getAllBooksByUser(Long userId, String state) {
 
         User userFromDB = userMapper.toUserModel(userService.get(userId));
         LocalDateTime timeNow = LocalDateTime.now();
@@ -139,7 +139,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public List<BookingDto> getAllBooksByOwner(int userId, String state) {
+    public List<BookingDto> getAllBooksByOwner(Long userId, String state) {
 
         UserDto user = userService.get(userId);
         LocalDateTime timeNow = LocalDateTime.now();

@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 public class ItemFullDto {
 
-    private int id;
+    private Long id;
     @NotBlank
     private String name;
     @NotNull
@@ -21,7 +21,7 @@ public class ItemFullDto {
     @NotNull
     private Boolean available;
 
-    private int ownerId;
+    private Long ownerId;
     private BookingShortDto lastBooking;
     private BookingShortDto nextBooking;
     private List<CommentDto> comments;
