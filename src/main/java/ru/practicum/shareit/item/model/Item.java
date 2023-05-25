@@ -1,11 +1,8 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.Data;
-import ru.practicum.shareit.booking.model.Booking;
-import ru.practicum.shareit.item.comment.model.Comment;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Data
 @Table(name = "ITEMS", schema = "public")
@@ -30,10 +27,4 @@ public class Item {
 
     @Column(name = "request_id")
     private int request;
-
-    @OneToMany(mappedBy = "item")
-    private List<Booking> booking;
-
-    @OneToMany(mappedBy = "item")
-    private List<Comment> comments;
 }

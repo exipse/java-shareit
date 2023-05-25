@@ -119,8 +119,9 @@ public class ItemServiceImpl implements ItemService {
             List<Comment> comments = commentRepository.findAllByItemId(itemId);
             itemdto.setLastBooking(bookingShortMapper.toBookingShortDto(lastBooking));
             itemdto.setNextBooking(bookingShortMapper.toBookingShortDto(nextBooking));
-            itemdto.setComments(commetMapper.toCommentListDto(comments));
         }
+        List<Comment> comments = commentRepository.findAllByItemId(itemId);
+        itemdto.setComments(commetMapper.toCommentListDto(comments));
         log.info(String.format("Вещь по id = %s получена", itemId));
 
         return itemdto;
