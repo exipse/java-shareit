@@ -9,6 +9,7 @@ import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
@@ -80,4 +81,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "where i.id =?1 order by b.start DESC")
     List<Booking> findAllBookingItems(long itemId);
 
+    @Query("select b from Booking as b inner join Item as i on b.item.id = i.id " +
+            "inner join User as u on b.booker.id = u.id " +
+            "where b.id=?1 and (u.id =?2 or i.ownerId =?2)")
+    Optional<Booking> checkInfoByBook(long booking, long itemId);
 }

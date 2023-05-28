@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.InputBookingDto;
+import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.dto.enums.Status;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
@@ -20,7 +20,9 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.user.storage.UserStorage;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,7 +42,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDto create(Long userId, InputBookingDto book) {
+    public BookingDto create(Long userId, BookingRequestDto book) {
         userStorage.findById(userId)
                 .orElseThrow(() -> new UserNoFoundException("Пользователя не существует"));
         itemRepository.findById(book.getItemId())
@@ -72,7 +74,7 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingDto validateRequest(Long userId, Long bookingId, Boolean approved) {
+    public BookingDto confirmOrRejectRequest(Long userId, Long bookingId, Boolean approved) {
         BookingDto booking = getInfoByBook(userId, bookingId);
         if (!Objects.equals(booking.getItem().getOwnerId(), userId)) {
             throw new UserNoFoundException(
@@ -95,17 +97,13 @@ public class BookingServiceImpl implements BookingService {
     @Override
     @Transactional
     public BookingDto getInfoByBook(Long userId, Long bookingId) {
-
         userStorage.findById(userId)
                 .orElseThrow(() -> new UserNoFoundException("Пользователя не существует"));
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(
                 () -> new BookingNoFoundException(String.format("Бронирование по id = %s не существует", bookingId)));
-        if ((Objects.equals(booking.getBooker().getId(), userId)) ||
-                Objects.equals(booking.getItem().getOwnerId(), userId)) {
-            return bookingMapper.toBookingDto(booking);
-        } else {
-            throw new UserNoFoundException("Пользователь не является автором бронирования или владельцем");
-        }
+        Booking book = bookingRepository.checkInfoByBook(bookingId, userId).orElseThrow
+                (() -> new UserNoFoundException("Пользователь не является автором бронирования или владельцем"));
+        return bookingMapper.toBookingDto(book);
     }
 
 
@@ -114,7 +112,9 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getAllBooksByUser(Long userId, String state) {
 
         User userFromDB = userMapper.toUserModel(userService.get(userId));
-        LocalDateTime timeNow = LocalDateTime.now();
+        ZoneId zone = ZoneId.of("Europe/Moscow");
+        Clock clock = Clock.systemUTC().withZone(zone);
+        LocalDateTime timeNow = LocalDateTime.now(zone);
 
         switch (state) {
             case "ALL":
@@ -143,7 +143,9 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getAllBooksByOwner(Long userId, String state) {
 
         UserDto user = userService.get(userId);
-        LocalDateTime timeNow = LocalDateTime.now();
+        ZoneId zone = ZoneId.of("Europe/Moscow");
+        Clock clock = Clock.systemUTC().withZone(zone);
+        LocalDateTime timeNow = LocalDateTime.now(clock);
 
         switch (state) {
             case "ALL":

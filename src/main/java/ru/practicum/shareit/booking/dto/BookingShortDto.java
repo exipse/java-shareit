@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class BookingShortDto {
 
     private Long id;
-    private int bookerId;
+    private Long bookerId;
     private LocalDateTime start;
     private LocalDateTime end;
 }
