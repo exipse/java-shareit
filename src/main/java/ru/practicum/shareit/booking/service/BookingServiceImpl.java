@@ -112,9 +112,9 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getAllBooksByUser(Long userId, String state) {
 
         User userFromDB = userMapper.toUserModel(userService.get(userId));
-        ZoneId zone = ZoneId.of("Europe/Moscow");
-        Clock clock = Clock.systemUTC().withZone(zone);
-        LocalDateTime timeNow = LocalDateTime.now(zone);
+       // ZoneId zone = ZoneId.of("Europe/Moscow");
+      //  Clock clock = Clock.systemUTC().withZone(zone);
+        LocalDateTime timeNow = LocalDateTime.now();
 
         switch (state) {
             case "ALL":
@@ -143,9 +143,9 @@ public class BookingServiceImpl implements BookingService {
     public List<BookingDto> getAllBooksByOwner(Long userId, String state) {
 
         UserDto user = userService.get(userId);
-        ZoneId zone = ZoneId.of("Europe/Moscow");
-        Clock clock = Clock.systemUTC().withZone(zone);
-        LocalDateTime timeNow = LocalDateTime.now(clock);
+      //  ZoneId zone = ZoneId.of("Europe/Moscow");
+       // Clock clock = Clock.systemUTC().withZone(zone);
+        LocalDateTime timeNow = LocalDateTime.now();
 
         switch (state) {
             case "ALL":
