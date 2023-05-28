@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
-import ru.practicum.shareit.booking.dto.InputBookingDto;
+import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
@@ -21,7 +21,7 @@ public class BookingController {
 
     @PostMapping
     public BookingDto create(@RequestHeader("X-Sharer-User-Id") Long userId,
-                             @RequestBody @Valid InputBookingDto book) {
+                             @RequestBody @Valid BookingRequestDto book) {
         log.info("POST /bookings. X-Sharer-User-Id = {}", userId);
         return bookingService.create(userId, book);
     }
@@ -30,11 +30,11 @@ public class BookingController {
      * Подтверждение или отклонение запроса на бронирование. Может быть выполнено только владельцем вещи.
      */
     @PatchMapping("/{bookingId}")
-    public BookingDto validateRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                      @PathVariable Long bookingId,
-                                      @RequestParam Boolean approved) {
+    public BookingDto confirmOrRejectRequest(@RequestHeader("X-Sharer-User-Id") Long userId,
+                                             @PathVariable Long bookingId,
+                                             @RequestParam Boolean approved) {
         log.info("Patch /bookings/{}/{}. X-Sharer-User-Id = {}", bookingId, approved, userId);
-        return bookingService.validateRequest(userId, bookingId, approved);
+        return bookingService.confirmOrRejectRequest(userId, bookingId, approved);
     }
 
     /**

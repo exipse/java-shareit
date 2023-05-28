@@ -164,8 +164,7 @@ public class ItemServiceImpl implements ItemService {
                 .findAllByItemAndBookerAndStatusAndEndBefore(item, user, Status.APPROVED, LocalDateTime.now());
 
         if (!bookings.isEmpty()) {
-            Comment comment = new Comment();
-            comment.setText(commentDto.getText());
+            Comment comment = commetMapper.toCommentModel(commentDto);
             comment.setAuthor(user);
             comment.setItem(item);
             comment.setCreated(date);
