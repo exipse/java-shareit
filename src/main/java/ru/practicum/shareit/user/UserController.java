@@ -33,18 +33,17 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    public UserDto update(@RequestBody UserDto user, @PathVariable String userId) {
+    public UserDto update(@RequestBody UserDto user, @PathVariable long userId) {
         log.info("PATCH /users/{}", userId);
         validateService.validateBeforeUpdateUser(user);
-        int id = Integer.parseInt(userId);
-        if (userService.get(id) == null) {
-            throw new UserNoFoundException(String.format("Пользователя с id %s не существует", id));
+        if (userService.get(userId) == null) {
+            throw new UserNoFoundException(String.format("Пользователя с id %s не существует", userId));
         }
-        return userService.updateUser(id, user);
+        return userService.updateUser(userId, user);
     }
 
     @GetMapping("/{userId}")
-    public UserDto get(@PathVariable("userId") int id) {
+    public UserDto get(@PathVariable("userId") Long id) {
         log.info("GET /users/{}", id);
         return userService.get(id);
     }
@@ -57,7 +56,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable int userId) {
+    public void delete(@PathVariable Long userId) {
         log.info("DELETE /users/{}", userId);
         userService.delete(userId);
     }
