@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.item.comment.mapper.CommetMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemShortForRequestDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.mapper.UserMapper;
 
@@ -16,7 +17,11 @@ public interface ItemMapper {
 
     ItemDto toItemDto(Item item);
 
+    ItemShortForRequestDto toItemShortForReqDtoList(Item item);
+
     List<Item> toItemModelList(List<ItemDto> itemDtoList);
 
     List<ItemDto> toItemDtoList(List<Item> item);
+
+    List<ItemShortForRequestDto> toItemShortForReqDtoList(List<Item> item);
 }

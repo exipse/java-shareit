@@ -26,5 +26,5 @@ public class Item {
     private Long ownerId;
 
     @Column(name = "request_id")
-    private int request;
+    private Long requestId;
 }

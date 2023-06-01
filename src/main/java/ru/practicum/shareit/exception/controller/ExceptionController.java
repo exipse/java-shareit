@@ -63,7 +63,8 @@ public class ExceptionController {
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler({UserNoFoundException.class, ItemNoFoundException.class, BookingNoFoundException.class})
+    @ExceptionHandler({UserNoFoundException.class, ItemNoFoundException.class,
+            BookingNoFoundException.class, RequestNoFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse notFoundException(final RuntimeException e) {
         log.error(e.getMessage());

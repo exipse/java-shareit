@@ -2,18 +2,21 @@ package ru.practicum.shareit.booking;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.service.BookingService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 @Slf4j
 @RestController
 @RequestMapping(path = "/bookings")
 @AllArgsConstructor
+@Validated
 
 public class BookingController {
 
@@ -52,9 +55,11 @@ public class BookingController {
      */
     @GetMapping
     public List<BookingDto> getAllBooksByUser(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                              @RequestParam(defaultValue = "ALL") String state) {
+                                              @RequestParam(defaultValue = "ALL") String state,
+                                              @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                              @RequestParam(defaultValue = "10") int size) {
         log.info("Get /bookings?state={}", state);
-        return bookingService.getAllBooksByUser(userId, state);
+        return bookingService.getAllBooksByUser(userId, state, from, size);
     }
 
     /**
@@ -62,8 +67,10 @@ public class BookingController {
      */
     @GetMapping("/owner")
     public List<BookingDto> getAllBooksByOwner(@RequestHeader("X-Sharer-User-Id") Long userId,
-                                               @RequestParam(defaultValue = "ALL") String state) {
+                                               @RequestParam(defaultValue = "ALL") String state,
+                                               @PositiveOrZero @RequestParam(defaultValue = "0") int from,
+                                               @RequestParam(defaultValue = "10") int size) {
         log.info("Get /bookings/owner?state={}", state);
-        return bookingService.getAllBooksByOwner(userId, state);
+        return bookingService.getAllBooksByOwner(userId, state, from, size);
     }
 }
