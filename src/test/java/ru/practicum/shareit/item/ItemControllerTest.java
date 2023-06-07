@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
@@ -145,11 +146,13 @@ class ItemControllerTest {
         when(itemService.addComment(anyLong(), any(), anyLong()))
                 .thenReturn(comment);
 
-        mvc.perform(post("/items/1/comment")
+        String result = mvc.perform(post("/items/{itemId}/comment", 1L)
                         .header("X-Sharer-User-Id", 1L)
                         .content(mapper.writeValueAsString(comment1))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.text").value(comment.getText()));
+                .andExpect(jsonPath("$.text").value(comment.getText())).andReturn().getResponse().getContentAsString();
+
+        assertEquals(mapper.writeValueAsString(comment), result);
     }
 }
