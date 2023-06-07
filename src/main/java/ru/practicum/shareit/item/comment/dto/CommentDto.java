@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.comment.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import ru.practicum.shareit.item.dto.ItemDto;
 
@@ -9,6 +10,7 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
+@Builder
 public class CommentDto {
     Long id;
     @NotBlank

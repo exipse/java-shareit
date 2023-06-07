@@ -44,6 +44,9 @@ class ItemControllerTest {
 
     ItemDto itemDto = new ItemDto(1L, "Дрель", "Простая дрель", true, 1L, 1L);
     CommentDto comment = new CommentDto(1L, "коммент", itemDto, "user1", LocalDateTime.now());
+    CommentDto comment1 = CommentDto.builder()
+            .text("коммент")
+            .build();
 
     BookingShortDto bookingShortDto1 = BookingShortDto.builder()
             .id(1L)
@@ -144,8 +147,9 @@ class ItemControllerTest {
 
         mvc.perform(post("/items/1/comment")
                         .header("X-Sharer-User-Id", 1L)
-                        .content(mapper.writeValueAsString(comment))
+                        .content(mapper.writeValueAsString(comment1))
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.text").value(comment.getText()));
     }
 }
