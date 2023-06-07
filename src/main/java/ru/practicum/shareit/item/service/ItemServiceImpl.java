@@ -41,16 +41,13 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
-    private final UserService userService;
     private final CommentRepository commentRepository;
     private final BookingRepository bookingRepository;
-    private final BookingMapper bookingMapper;
     private final BookingShortMapper bookingShortMapper;
     private final UserStorage userStorage;
     private final ItemMapper itemMapper;
     private final ItemFullMapper itemFullMapper;
     private final CommetMapper commetMapper;
-
 
     @Override
     @Transactional

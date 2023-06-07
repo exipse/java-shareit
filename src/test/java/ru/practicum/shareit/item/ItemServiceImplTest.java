@@ -1,4 +1,4 @@
-package ru.practicum.shareit.item.service;
+package ru.practicum.shareit.item;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,6 +27,7 @@ import ru.practicum.shareit.item.dto.ItemFullDto;
 import ru.practicum.shareit.item.mapper.ItemFullMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.service.ItemServiceImpl;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
@@ -90,7 +91,8 @@ class ItemServiceImplTest {
         user1 = new User(1L, "user1", "user1@user.com");
 
 
-        itemDto1 = new ItemDto(1L, "Дрель", "Простая дрель", true, 1L, 1L);
+        itemDto1 = new ItemDto(1L, "Дрель", "Простая дрель",
+                true, 1L, 1L);
         item1 = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
 
         itemFullDto1 = ItemFullDto.builder()
@@ -161,7 +163,7 @@ class ItemServiceImplTest {
         when(userStorage.findById(1L)).thenReturn(Optional.of(user1));
         when(itemRepository.save(item1)).thenReturn(item1);
 
-        assertEquals(itemService.createItem(itemDto1, 1l), itemDto1);
+        assertEquals(itemService.createItem(itemDto1, 1L), itemDto1);
     }
 
     @Test
@@ -169,7 +171,7 @@ class ItemServiceImplTest {
         when(userStorage.findById(2L)).thenReturn(Optional.empty());
 
         Exception e = assertThrows(UserNoFoundException.class,
-                () -> itemService.createItem(itemDto1, 1l));
+                () -> itemService.createItem(itemDto1, 1L));
 
         assertEquals("Пользователя не существует", e.getMessage());
 
@@ -225,7 +227,7 @@ class ItemServiceImplTest {
 
     @Test
     void getAllItemsByUserTest() {
-        when(itemRepository.findAllByOwnerIdOrderById(1l)).thenReturn(List.of(item1));
+        when(itemRepository.findAllByOwnerIdOrderById(1L)).thenReturn(List.of(item1));
 
         when(userStorage.findById(1L)).thenReturn(Optional.of(user1));
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item1));
@@ -235,7 +237,7 @@ class ItemServiceImplTest {
         when(bookingShortMapper.toBookingShortDto(booking2)).thenReturn(bookingShortDto2);
         when(commetMapper.toCommentListDto(commentList)).thenReturn(commentListDto);
 
-        List<ItemFullDto> result = itemService.getAllItemsByUser(1l);
+        List<ItemFullDto> result = itemService.getAllItemsByUser(1L);
 
         assertEquals(List.of(finalFull), result);
         assertEquals(1, result.size());
@@ -243,14 +245,13 @@ class ItemServiceImplTest {
 
     @Test
     void getAllItemsButItemNoExistByUserTest() {
-        when(itemRepository.findAllByOwnerIdOrderById(1l)).thenThrow(new ItemNoFoundException("Вещей не найдено"));
+        when(itemRepository.findAllByOwnerIdOrderById(1L)).thenThrow(new ItemNoFoundException("Вещей не найдено"));
 
         Exception e = assertThrows(ItemNoFoundException.class, () -> itemRepository
                 .findAllByOwnerIdOrderById(1L));
 
         assertEquals("Вещей не найдено", e.getMessage());
     }
-
 
     @Test
     void search() {
@@ -259,7 +260,6 @@ class ItemServiceImplTest {
         assertEquals(itemService.search("текст"), List.of(itemDto1));
         assertEquals(itemService.search("текст").size(), 1);
     }
-
 
     @Test
     void addComment() {
@@ -283,13 +283,12 @@ class ItemServiceImplTest {
         assertEquals(commentDto, commentDto1);
     }
 
-
     @Test
     void addCommentUserNotRentedItem() {
         when(userStorage.findById(1L)).thenReturn(Optional.of(user1));
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item1));
 
-        when(itemRepository.findAllByOwnerIdOrderById(1l)).thenThrow(new ItemNoFoundException("Вещей не найдено"));
+        when(itemRepository.findAllByOwnerIdOrderById(1L)).thenThrow(new ItemNoFoundException("Вещей не найдено"));
         NoAvailableException exception = assertThrows(NoAvailableException.class, () -> itemService
                 .addComment(1L, commentDto1, 1L));
 

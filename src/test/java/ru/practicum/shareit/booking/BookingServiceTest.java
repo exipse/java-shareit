@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.service;
+package ru.practicum.shareit.booking;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +18,7 @@ import ru.practicum.shareit.booking.dto.enums.Status;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.booking.service.BookingServiceImpl;
 import ru.practicum.shareit.exception.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemFullDto;
@@ -87,7 +88,8 @@ class BookingServiceTest {
         userDto1 = new UserDto(1L, "user1", "user1@user.com");
 
         item1 = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
-        itemDto1 = new ItemDto(1L, "Дрель", "Простая дрель", true, 1L, 1L);
+        itemDto1 = new ItemDto(1L, "Дрель", "Простая дрель", true,
+                1L, 1L);
 
         booking1 = Booking.builder()
                 .id(1L)
@@ -132,7 +134,6 @@ class BookingServiceTest {
         Mockito.when(itemFullMapper.itemFulltoModel(itemFullDto1)).thenReturn(item1);
     }
 
-
     @Test
     void createBooksWithNoExistUser() {
         Mockito.when(userMapper.toUserModel(userDto1)).thenReturn(user1);
@@ -141,7 +142,6 @@ class BookingServiceTest {
                 () -> bookingService.create(2L, bookingRequestDto));
         assertEquals("Пользователя не существует", exception.getMessage());
     }
-
 
     @Test
     void createBooksWithNoExistItem() {
@@ -152,13 +152,12 @@ class BookingServiceTest {
         assertEquals("Вещи не существует", exception.getMessage());
     }
 
-
     @Test
     void createBooksWithNoCorrectDateTime() {
         when(userStorage.findById(anyLong())).thenReturn(Optional.of(user1));
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
-        BookingRequestDto errorDate = BookingRequestDto.builder().
-                itemId(2L)
+        BookingRequestDto errorDate = BookingRequestDto.builder()
+                .itemId(2L)
                 .start(LocalDateTime.now().minusHours(5L))
                 .end(LocalDateTime.now().minusHours(7L))
                 .build();
@@ -216,7 +215,8 @@ class BookingServiceTest {
     @Test
     void getInfoByBookingWhenBookingNoExist() {
         when(userStorage.findById(anyLong())).thenReturn(Optional.of(user1));
-        when(bookingRepository.findById(anyLong())).thenThrow(new BookingNoFoundException("Бронирования не существует"));
+        when(bookingRepository.findById(anyLong()))
+                .thenThrow(new BookingNoFoundException("Бронирования не существует"));
 
         BookingNoFoundException exception = assertThrows(BookingNoFoundException.class,
                 () -> bookingService.getInfoByBook(1L, 2L));
@@ -243,7 +243,6 @@ class BookingServiceTest {
 
         assertEquals(bookingDto1, bookingService.getInfoByBook(1L, 5L));
     }
-
 
     @Test
     void confirmOrRejectRequestWhenUserNotOwner() {
@@ -312,7 +311,6 @@ class BookingServiceTest {
         assertEquals(bookings.get(0).getId(), 1L);
 
     }
-
 
     @ParameterizedTest
     @CsvSource(value = {

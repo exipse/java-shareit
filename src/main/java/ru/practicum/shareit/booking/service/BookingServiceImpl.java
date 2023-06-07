@@ -46,7 +46,7 @@ public class BookingServiceImpl implements BookingService {
         userStorage.findById(userId)
                 .orElseThrow(() -> new UserNoFoundException("Пользователя не существует"));
         itemRepository.findById(book.getItemId())
-                .orElseThrow(() -> new ItemNoFoundException("Пользователя не существует"));
+                .orElseThrow(() -> new ItemNoFoundException("Вещи не существует"));
         if (book.getStart().isAfter(book.getEnd())
                 || book.getStart().equals(book.getEnd())) {
             throw new DataTimeValidateException("Указано некорректное время бронирования");

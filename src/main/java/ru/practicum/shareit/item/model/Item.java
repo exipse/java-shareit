@@ -1,11 +1,17 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Table(name = "ITEMS", schema = "public")
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Item {
 

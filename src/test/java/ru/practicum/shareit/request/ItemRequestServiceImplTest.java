@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request.service;
+package ru.practicum.shareit.request;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +18,7 @@ import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemWithAnswersRequestDto;
 import ru.practicum.shareit.request.mapper.RequestMapping;
 import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
 import ru.practicum.shareit.request.storage.ItemRequestStorage;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
@@ -84,9 +85,11 @@ class ItemRequestServiceImplTest {
 
         requestList = List.of(request);
 
-        itemShortForRequestDto = new ItemShortForRequestDto(1L, "Дрель", 1L, "Простая дрель", true, 1L);
+        itemShortForRequestDto = new ItemShortForRequestDto(1L, "Дрель", 1L,
+                "Простая дрель", true, 1L);
         itemShortForRequestDtos = List.of(itemShortForRequestDto);
-        withAnswersRequestDto = new ItemWithAnswersRequestDto(1L, "Простая дрель", LocalDateTime.now(), userDto, itemShortForRequestDtos);
+        withAnswersRequestDto = new ItemWithAnswersRequestDto(1L, "Простая дрель",
+                LocalDateTime.now(), userDto, itemShortForRequestDtos);
 
         requesWithAnswerstDtos = List.of(withAnswersRequestDto);
 
@@ -111,7 +114,7 @@ class ItemRequestServiceImplTest {
         when(itemStorage.findAllByRequestId(anyLong())).thenReturn(itemList);
         when(itemMapper.toItemShortForReqDtoList(itemList)).thenReturn(itemShortForRequestDtos);
 
-        assertEquals(requestService.getOwnRequests( 1L), requesWithAnswerstDtos);
+        assertEquals(requestService.getOwnRequests(1L), requesWithAnswerstDtos);
     }
 
     @Test
@@ -123,7 +126,7 @@ class ItemRequestServiceImplTest {
         when(itemStorage.findAllByRequestId(anyLong())).thenReturn(itemList);
         when(itemMapper.toItemShortForReqDtoList(itemList)).thenReturn(itemShortForRequestDtos);
 
-        assertEquals(requestService.getUserRequests( 1,1,1L), requesWithAnswerstDtos);
+        assertEquals(requestService.getUserRequests(1, 1, 1L), requesWithAnswerstDtos);
     }
 
     @Test
@@ -141,9 +144,8 @@ class ItemRequestServiceImplTest {
         when(requestStorage.findById(anyLong())).thenReturn(Optional.empty());
 
         RequestNoFoundException exception = assertThrows(RequestNoFoundException.class,
-                () -> requestService.getRequestById(1L,1L));
+                () -> requestService.getRequestById(1L, 1L));
 
         assertEquals(String.format("Запроса по id = 1 не существует"), exception.getMessage());
-
     }
 }
