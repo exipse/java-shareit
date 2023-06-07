@@ -29,6 +29,8 @@ class UserControllerTest {
 
     @MockBean
     private UserService userService;
+    @MockBean
+    private ValidateService validateService;
     @Autowired
     private MockMvc mvc;
     @Autowired

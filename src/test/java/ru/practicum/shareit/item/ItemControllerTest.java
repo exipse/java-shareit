@@ -39,6 +39,9 @@ class ItemControllerTest {
     @MockBean
     private ItemService itemService;
 
+    @MockBean
+    private ValidateService validateService;
+
     ItemDto itemDto = new ItemDto(1L, "Дрель", "Простая дрель", true, 1L, 1L);
     CommentDto comment = new CommentDto(1L, "коммент", itemDto, "user1", LocalDateTime.now());
 
