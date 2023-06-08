@@ -17,11 +17,9 @@ public interface ItemMapper {
 
     ItemDto toItemDto(Item item);
 
-    ItemShortForRequestDto toItemShortForReqDtoList(Item item);
-
-    List<Item> toItemModelList(List<ItemDto> itemDtoList);
+    ItemShortForRequestDto toItemShortForReqDto(Item item);
 
     List<ItemDto> toItemDtoList(List<Item> item);
 
-    List<ItemShortForRequestDto> toItemShortForReqDtoList(List<Item> item);
+    List<ItemShortForRequestDto> toItemShortForReqDtos(List<Item> item);
 }

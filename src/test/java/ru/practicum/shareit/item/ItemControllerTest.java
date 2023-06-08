@@ -43,10 +43,10 @@ class ItemControllerTest {
     @MockBean
     private ValidateService validateService;
 
-    ItemDto itemDto = new ItemDto(1L, "Дрель", "Простая дрель", true, 1L, 1L);
-    CommentDto comment = new CommentDto(1L, "коммент", itemDto, "user1", LocalDateTime.now());
+    ItemDto itemDto = new ItemDto(1L, "Instrument", "Just Instrument", true, 1L, 1L);
+    CommentDto comment = new CommentDto(1L, "Comment", itemDto, "user1", LocalDateTime.now());
     CommentDto comment1 = CommentDto.builder()
-            .text("коммент")
+            .text("Comment")
             .build();
 
     BookingShortDto bookingShortDto1 = BookingShortDto.builder()
@@ -66,7 +66,7 @@ class ItemControllerTest {
     ItemFullDto fullDto = ItemFullDto.builder()
             .id(1L)
             .name("Дрель")
-            .description("Простая дрель")
+            .description("Description")
             .available(true)
             .ownerId(1L)
             .lastBooking(bookingShortDto1)
@@ -138,7 +138,7 @@ class ItemControllerTest {
                         .param("text", "something")
                         .header("X-Sharer-User-Id", "1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[*].description", containsInAnyOrder("Простая дрель")));
+                .andExpect(jsonPath("$[*].description", containsInAnyOrder("Just Instrument")));
     }
 
     @Test

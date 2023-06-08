@@ -16,11 +16,8 @@ public interface RequestMapping {
 
     ItemRequest toRequestModel(ItemRequestDto itemRequest);
 
-
     ItemWithAnswersRequestDto toRequestWithAnswerDto(ItemRequest itemRequest);
-
 
     List<ItemWithAnswersRequestDto> toRequestWithAnswerListDto(List<ItemRequest> itemRequest);
 
-    List<ItemRequestDto> toRequestDtoList(List<ItemRequest> itemRequest);
 }

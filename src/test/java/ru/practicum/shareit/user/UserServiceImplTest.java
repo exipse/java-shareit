@@ -9,6 +9,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import ru.practicum.shareit.exception.DBConstraintException;
 import ru.practicum.shareit.exception.UserNoFoundException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserListMapper;
@@ -68,6 +69,16 @@ class UserServiceImplTest {
         when(userStorage.save(any())).thenReturn(user);
         Mockito.when(userMapper.toUserDto(user)).thenReturn(userDto1);
         assertEquals(userService.createUser(userDto1), userDto1);
+    }
+
+    @Test
+    void createUserDbConstraintException() {
+        User user = new User(1L, "user", "user@user.com");
+        when(userStorage.save(any())).thenThrow(new DBConstraintException("Ошибка валидации при добавлении в БД"));
+
+        Exception exception = assertThrows(DBConstraintException.class,
+                () -> userService.createUser(userDto1));
+        assertEquals("Ошибка валидации при добавлении в БД", exception.getMessage());
     }
 
     @Test

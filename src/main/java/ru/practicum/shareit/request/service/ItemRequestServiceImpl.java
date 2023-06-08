@@ -77,7 +77,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     private ItemWithAnswersRequestDto enrichmentRequestAnswerDto(ItemWithAnswersRequestDto dto) {
-        dto.setItems(itemMapper.toItemShortForReqDtoList(itemStorage
+        dto.setItems(itemMapper.toItemShortForReqDtos(itemStorage
                 .findAllByRequestId(dto.getId())));
         return dto;
     }

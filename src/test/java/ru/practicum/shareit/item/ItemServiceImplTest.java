@@ -90,7 +90,6 @@ class ItemServiceImplTest {
         userDto1 = new UserDto(1L, "user1", "user1@user.com");
         user1 = new User(1L, "user1", "user1@user.com");
 
-
         itemDto1 = new ItemDto(1L, "Дрель", "Простая дрель",
                 true, 1L, 1L);
         item1 = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
@@ -102,7 +101,6 @@ class ItemServiceImplTest {
                 .available(true)
                 .ownerId(1L)
                 .build();
-
 
         comment1 = new Comment(1L, "коммент", item1, user1, LocalDateTime.now());
         commentList = List.of(comment1);
@@ -125,7 +123,6 @@ class ItemServiceImplTest {
                 .item(item1)
                 .booker(user1)
                 .status(Status.WAITING).build();
-
 
         bookingShortDto1 = BookingShortDto.builder()
                 .id(1L)
@@ -155,7 +152,6 @@ class ItemServiceImplTest {
         Mockito.when(itemMapper.toItemModel(itemDto1)).thenReturn(item1);
         Mockito.when(itemMapper.toItemDto(item1)).thenReturn(itemDto1);
         Mockito.when(itemFullMapper.itemFulltoDto(item1)).thenReturn(itemFullDto1);
-
     }
 
     @Test
@@ -174,7 +170,6 @@ class ItemServiceImplTest {
                 () -> itemService.createItem(itemDto1, 1L));
 
         assertEquals("Пользователя не существует", e.getMessage());
-
     }
 
     @Test
@@ -211,7 +206,6 @@ class ItemServiceImplTest {
         when(commetMapper.toCommentListDto(commentList)).thenReturn(commentListDto);
 
         assertEquals(itemService.getById(1L, 1L), finalFull);
-
     }
 
     @Test
@@ -294,5 +288,4 @@ class ItemServiceImplTest {
 
         assertEquals(String.format("Пользователь не арендовал  вещь или аренда не закончена"), exception.getMessage());
     }
-
 }

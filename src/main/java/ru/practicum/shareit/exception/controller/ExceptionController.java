@@ -13,14 +13,6 @@ import ru.practicum.shareit.exception.*;
 @Slf4j
 public class ExceptionController {
 
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse emailException(final EmailExistException e) {
-        log.error(e.getMessage());
-        return new ErrorResponse(HttpStatus.CONFLICT.getReasonPhrase(), e.getMessage());
-
-    }
-
     @ExceptionHandler({MethodArgumentNotValidException.class, DataTimeValidateException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(final Exception e) {

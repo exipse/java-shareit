@@ -112,7 +112,7 @@ class ItemRequestServiceImplTest {
         when(requestMapping.toRequestWithAnswerListDto(requestList)).thenReturn(requesWithAnswerstDtos);
 
         when(itemStorage.findAllByRequestId(anyLong())).thenReturn(itemList);
-        when(itemMapper.toItemShortForReqDtoList(itemList)).thenReturn(itemShortForRequestDtos);
+        when(itemMapper.toItemShortForReqDtos(itemList)).thenReturn(itemShortForRequestDtos);
 
         assertEquals(requestService.getOwnRequests(1L), requesWithAnswerstDtos);
     }
@@ -124,7 +124,7 @@ class ItemRequestServiceImplTest {
         when(requestMapping.toRequestWithAnswerListDto(requestList)).thenReturn(requesWithAnswerstDtos);
 
         when(itemStorage.findAllByRequestId(anyLong())).thenReturn(itemList);
-        when(itemMapper.toItemShortForReqDtoList(itemList)).thenReturn(itemShortForRequestDtos);
+        when(itemMapper.toItemShortForReqDtos(itemList)).thenReturn(itemShortForRequestDtos);
 
         assertEquals(requestService.getUserRequests(1, 1, 1L), requesWithAnswerstDtos);
     }
