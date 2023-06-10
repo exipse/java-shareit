@@ -17,10 +17,10 @@ import java.time.LocalDateTime;
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(name = "text")
-    String text;
+    private String text;
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)

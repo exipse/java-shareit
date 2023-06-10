@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Transactional
 public class ItemRequestServiceImpl implements ItemRequestService {
 
     private final UserService userService;
@@ -31,7 +32,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemMapper itemMapper;
 
     @Override
-    @Transactional
     public ItemRequestDto addNewRequest(ItemRequestDto requestDto, Long userId) {
         UserDto user = userService.get(userId);
         LocalDateTime dateTime = LocalDateTime.now();
@@ -43,7 +43,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ItemWithAnswersRequestDto> getOwnRequests(Long userId) {
         userService.get(userId);
         List<ItemRequest> requestList = requestStorage.findAllByRequestor_IdOrderByCreatedDesc(userId);
@@ -55,7 +55,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ItemWithAnswersRequestDto> getUserRequests(int from, int size, Long userId) {
         userService.get(userId);
         Pageable pageable = PageRequest.of(from / size, size);
@@ -68,7 +68,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public ItemWithAnswersRequestDto getRequestById(Long requestId, Long userId) {
         ItemRequest requestInDb = requestStorage.findById(requestId).orElseThrow(() ->
                 new RequestNoFoundException(String.format("Запроса по id = %s не существует", requestId)));
