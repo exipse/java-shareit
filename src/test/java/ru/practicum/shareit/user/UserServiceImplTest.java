@@ -17,6 +17,7 @@ import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserServiceImpl;
 import ru.practicum.shareit.user.storage.UserStorage;
+import ru.practicum.shareit.validation.ValidateService;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,15 +40,17 @@ class UserServiceImplTest {
     UserMapper userMapper;
     @Mock
     UserListMapper userListMapper;
+    @Mock
+    ValidateService validateService;
 
     @InjectMocks
     UserServiceImpl userService;
 
-    UserDto userDto1;
-    UserDto userDto2;
-    User user1;
-    User user2;
-    User user3;
+    private UserDto userDto1;
+    private UserDto userDto2;
+    private User user1;
+    private User user2;
+    private User user3;
 
     @BeforeEach
     void before() {
@@ -110,10 +113,8 @@ class UserServiceImplTest {
     void getAllTwoUsers() {
         when(userStorage.save(user1)).thenReturn(user1);
         when(userStorage.save(user2)).thenReturn(user2);
-
         assertEquals(userService.createUser(userDto1), userDto1);
         assertEquals(userService.createUser(userDto2), userDto2);
-
         assertEquals(userService.getAll(), List.of(userDto1, userDto2));
     }
 

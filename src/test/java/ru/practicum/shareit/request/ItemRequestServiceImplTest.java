@@ -21,8 +21,10 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.service.ItemRequestServiceImpl;
 import ru.practicum.shareit.request.storage.ItemRequestStorage;
 import ru.practicum.shareit.user.dto.UserDto;
+import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
+import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -41,6 +43,10 @@ class ItemRequestServiceImplTest {
     @Mock
     private UserService userService;
     @Mock
+    private UserStorage userStorage;
+    @Mock
+    private UserMapper userMapper;
+    @Mock
     private ItemRequestStorage requestStorage;
     @Mock
     private ItemRepository itemStorage;
@@ -52,22 +58,22 @@ class ItemRequestServiceImplTest {
     @InjectMocks
     ItemRequestServiceImpl requestService;
 
-    Item item;
-    ItemDto itemDto;
+    private Item item;
+    private ItemDto itemDto;
 
-    List<Item> itemList;
+    private List<Item> itemList;
 
-    User user;
-    UserDto userDto;
+    private User user;
+    private UserDto userDto;
 
-    ItemRequest request;
-    ItemRequestDto requestDto;
-    List<ItemRequest> requestList;
+    private ItemRequest request;
+    private ItemRequestDto requestDto;
+    private List<ItemRequest> requestList;
 
-    ItemWithAnswersRequestDto withAnswersRequestDto;
-    ItemShortForRequestDto itemShortForRequestDto;
-    List<ItemShortForRequestDto> itemShortForRequestDtos;
-    List<ItemWithAnswersRequestDto> requesWithAnswerstDtos;
+    private ItemWithAnswersRequestDto withAnswersRequestDto;
+    private ItemShortForRequestDto itemShortForRequestDto;
+    private List<ItemShortForRequestDto> itemShortForRequestDtos;
+    private List<ItemWithAnswersRequestDto> requesWithAnswerstDtos;
 
 
     @BeforeEach
@@ -97,7 +103,10 @@ class ItemRequestServiceImplTest {
 
     @Test
     void addNewRequest() {
-        when(userService.get(anyLong())).thenReturn(userDto);
+
+        when(userStorage.findById(anyLong())).thenReturn(Optional.ofNullable(user));
+        when(userMapper.toUserModel(any())).thenReturn(user);
+
         when(requestMapping.toRequestModel(requestDto)).thenReturn(request);
         when(requestStorage.save(request)).thenReturn(request);
         when(requestMapping.toRequestDto(request)).thenReturn(requestDto);
@@ -107,7 +116,7 @@ class ItemRequestServiceImplTest {
 
     @Test
     void getOwnRequests() {
-        when(userService.get(anyLong())).thenReturn(userDto);
+        when(userStorage.existsById(anyLong())).thenReturn(true);
         when(requestStorage.findAllByRequestor_IdOrderByCreatedDesc(anyLong())).thenReturn(requestList);
         when(requestMapping.toRequestWithAnswerListDto(requestList)).thenReturn(requesWithAnswerstDtos);
 
@@ -119,6 +128,7 @@ class ItemRequestServiceImplTest {
 
     @Test
     void getUserRequests() {
+        when(userStorage.existsById(anyLong())).thenReturn(true);
         when(userService.get(anyLong())).thenReturn(userDto);
         when(requestStorage.findAllByRequestor_IdIsNotOrderByCreated(anyLong(), any())).thenReturn(requestList);
         when(requestMapping.toRequestWithAnswerListDto(requestList)).thenReturn(requesWithAnswerstDtos);
@@ -132,7 +142,7 @@ class ItemRequestServiceImplTest {
     @Test
     void getRequestById() {
         when(requestStorage.findById(anyLong())).thenReturn(Optional.of(request));
-        when(userService.get(anyLong())).thenReturn(userDto);
+        when(userStorage.existsById(anyLong())).thenReturn(true);
 
         when(requestMapping.toRequestWithAnswerDto(request)).thenReturn(withAnswersRequestDto);
         assertEquals(requestService.getRequestById(1L, 1L), withAnswersRequestDto);

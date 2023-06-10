@@ -66,24 +66,23 @@ class ItemServiceImplTest {
     @InjectMocks
     ItemServiceImpl itemService;
 
-    Item item1;
-    ItemDto itemDto1;
-    ItemFullDto itemFullDto1;
-    ItemFullDto finalFull;
+    private Item item1;
+    private ItemDto itemDto1;
+    private ItemFullDto itemFullDto1;
+    private ItemFullDto finalFull;
 
-    User user1;
-    UserDto userDto1;
+    private User user1;
+    private UserDto userDto1;
+    private Comment comment1;
+    private List<Comment> commentList;
+    private CommentDto commentDto1;
+    private List<CommentDto> commentListDto;
 
-    Comment comment1;
-    List<Comment> commentList;
-    CommentDto commentDto1;
-    List<CommentDto> commentListDto;
-
-    Booking booking1;
-    Booking booking2;
-    BookingShortDto bookingShortDto1;
-    BookingShortDto bookingShortDto2;
-    List<Booking> bookingList;
+    private Booking booking1;
+    private Booking booking2;
+    private BookingShortDto bookingShortDto1;
+    private BookingShortDto bookingShortDto2;
+    private List<Booking> bookingList;
 
     @BeforeEach
     void before() {
@@ -165,7 +164,6 @@ class ItemServiceImplTest {
     @Test
     void createItemWhithNoExistUser() {
         when(userStorage.findById(2L)).thenReturn(Optional.empty());
-
         Exception e = assertThrows(UserNoFoundException.class,
                 () -> itemService.createItem(itemDto1, 1L));
 
@@ -197,25 +195,22 @@ class ItemServiceImplTest {
 
     @Test
     void getExistItemById() {
-        when(userStorage.findById(1L)).thenReturn(Optional.of(user1));
+        when(userStorage.existsById(1L)).thenReturn(true);
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item1));
         when(bookingRepository.findAllBookingItems(1L)).thenReturn(bookingList);
         when(commentRepository.findAllByItemId(1L)).thenReturn(commentList);
         when(bookingShortMapper.toBookingShortDto(booking1)).thenReturn(bookingShortDto1);
         when(bookingShortMapper.toBookingShortDto(booking2)).thenReturn(bookingShortDto2);
         when(commetMapper.toCommentListDto(commentList)).thenReturn(commentListDto);
-
         assertEquals(itemService.getById(1L, 1L), finalFull);
     }
 
     @Test
     void getNotExistItemById() {
-        when(userStorage.findById(1L)).thenReturn(Optional.of(user1));
+        when(userStorage.existsById(1L)).thenReturn(true);
         when(itemRepository.findById(5L)).thenReturn(Optional.empty());
-
         ItemNoFoundException exception = assertThrows(ItemNoFoundException.class, () -> itemService
                 .getById(5L, 1L));
-
         assertEquals(String.format("Вещь по id %d не найдена", 5), exception.getMessage());
     }
 
@@ -223,16 +218,14 @@ class ItemServiceImplTest {
     void getAllItemsByUserTest() {
         when(itemRepository.findAllByOwnerIdOrderById(1L)).thenReturn(List.of(item1));
 
-        when(userStorage.findById(1L)).thenReturn(Optional.of(user1));
+        when(userStorage.existsById(1L)).thenReturn(true);
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item1));
         when(bookingRepository.findAllBookingItems(1L)).thenReturn(bookingList);
         when(commentRepository.findAllByItemId(1L)).thenReturn(commentList);
         when(bookingShortMapper.toBookingShortDto(booking1)).thenReturn(bookingShortDto1);
         when(bookingShortMapper.toBookingShortDto(booking2)).thenReturn(bookingShortDto2);
         when(commetMapper.toCommentListDto(commentList)).thenReturn(commentListDto);
-
         List<ItemFullDto> result = itemService.getAllItemsByUser(1L);
-
         assertEquals(List.of(finalFull), result);
         assertEquals(1, result.size());
     }
@@ -240,10 +233,8 @@ class ItemServiceImplTest {
     @Test
     void getAllItemsButItemNoExistByUserTest() {
         when(itemRepository.findAllByOwnerIdOrderById(1L)).thenThrow(new ItemNoFoundException("Вещей не найдено"));
-
         Exception e = assertThrows(ItemNoFoundException.class, () -> itemRepository
                 .findAllByOwnerIdOrderById(1L));
-
         assertEquals("Вещей не найдено", e.getMessage());
     }
 
@@ -258,21 +249,19 @@ class ItemServiceImplTest {
     @Test
     void addComment() {
         when(userStorage.findById(1L)).thenReturn(Optional.of(user1));
-
+        when(userStorage.existsById(1L)).thenReturn(true);
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item1));
         when(bookingRepository.findAllBookingItems(1L)).thenReturn(bookingList);
         when(commentRepository.findAllByItemId(1L)).thenReturn(commentList);
         when(bookingShortMapper.toBookingShortDto(booking1)).thenReturn(bookingShortDto1);
         when(bookingShortMapper.toBookingShortDto(booking2)).thenReturn(bookingShortDto2);
         when(commetMapper.toCommentListDto(commentList)).thenReturn(commentListDto);
-
         when(itemFullMapper.itemFulltoModel(itemFullDto1)).thenReturn(item1);
         when(bookingRepository.findAllByItemAndBookerAndStatusAndEndBefore(any(), any(), any(), any()))
                 .thenReturn(bookingList);
         when(commetMapper.toCommentModel(commentDto1)).thenReturn(comment1);
         when(commentRepository.save(comment1)).thenReturn(comment1);
         when(commetMapper.toCommentDto(comment1)).thenReturn(commentDto1);
-
         CommentDto commentDto = itemService.addComment(1L, commentDto1, 1L);
         assertEquals(commentDto, commentDto1);
     }
@@ -280,8 +269,8 @@ class ItemServiceImplTest {
     @Test
     void addCommentUserNotRentedItem() {
         when(userStorage.findById(1L)).thenReturn(Optional.of(user1));
+        when((userStorage.existsById(anyLong()))).thenReturn(true);
         when(itemRepository.findById(1L)).thenReturn(Optional.of(item1));
-
         when(itemRepository.findAllByOwnerIdOrderById(1L)).thenThrow(new ItemNoFoundException("Вещей не найдено"));
         NoAvailableException exception = assertThrows(NoAvailableException.class, () -> itemService
                 .addComment(1L, commentDto1, 1L));

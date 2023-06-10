@@ -16,30 +16,30 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 class BookingShortMapperTest {
 
-    BookingShortDto bookingShortDto = new BookingShortDto();
-    BookingShortDto bookingShortDto1 = BookingShortDto.builder()
+    private final BookingShortDto bookingShortDto = new BookingShortDto();
+    private final BookingShortDto bookingShortDto1 = BookingShortDto.builder()
             .id(1L)
             .start(LocalDateTime.now().minusHours(7L))
             .end(LocalDateTime.now().minusHours(5L))
             .bookerId(1L).build();
-    Item item = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
-    User user = new User(1L, "user1", "user1@user.com");
-    Booking booking = Booking.builder()
+    private final Item item = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
+    private final User user = new User(1L, "user1", "user1@user.com");
+    private final Booking booking = Booking.builder()
             .id(1L)
             .start(LocalDateTime.now().minusHours(7L))
             .end(LocalDateTime.now().minusHours(5L))
             .item(item)
             .booker(user)
             .status(Status.WAITING).build();
-    User user2 = new User(null, "user1", "user1@user.com");
-    Booking booking2 = Booking.builder()
+    private final User user2 = new User(null, "user1", "user1@user.com");
+    private final Booking booking2 = Booking.builder()
             .id(1L)
             .start(LocalDateTime.now().minusHours(7L))
             .end(LocalDateTime.now().minusHours(5L))
             .item(item)
             .booker(user2)
             .status(Status.WAITING).build();
-    Booking booking3 = Booking.builder()
+    private final Booking booking3 = Booking.builder()
             .id(1L)
             .start(LocalDateTime.now().minusHours(7L))
             .end(LocalDateTime.now().minusHours(5L))

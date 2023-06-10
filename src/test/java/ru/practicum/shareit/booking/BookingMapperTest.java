@@ -27,25 +27,20 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest(classes = {BookingMapperImpl.class, ItemMapperImpl.class, UserMapperImpl.class})
 class BookingMapperTest {
 
-    Item item = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
-    ItemDto itemDto = new ItemDto(1L, "Дрель", "Простая дрель", true, 1L, 1L);
-    User user = new User(1L, "user1", "user1@user.com");
-    UserDto userDto = new UserDto(1L, "user1", "user1@user.com");
-    Booking booking = Booking.builder()
-            .id(1L)
-            .start(LocalDateTime.now().minusHours(7L))
-            .end(LocalDateTime.now().minusHours(5L))
-            .item(item)
-            .booker(user)
-            .status(Status.WAITING).build();
-    BookingDto bookingDto = BookingDto.builder()
-            .id(1L)
-            .start(LocalDateTime.now().minusHours(7L))
-            .end(LocalDateTime.now().minusHours(5L))
-            .item(itemDto)
-            .booker(userDto)
-            .status(Status.WAITING).build();
-    BookingDto bookingDto1 = new BookingDto();
+    private final Item item = Item.builder().id(1L).name("Дрель").description("Простая дрель")
+            .available(true).ownerId(1L).build();
+    private final ItemDto itemDto = ItemDto.builder()
+            .id(1L).name("Дрель").description("Простая дрель").available(true).ownerId(1L).requestId(1L).build();
+    private final User user = User.builder()
+            .id(1L).name("user1").email("user1@user.com").build();
+    private final UserDto userDto = UserDto.builder().id(1L).name("user1").email("user1@user.com").build();
+    private final Booking booking = Booking.builder()
+            .id(1L).start(LocalDateTime.now().minusHours(7L))
+            .end(LocalDateTime.now().minusHours(5L)).item(item).booker(user).status(Status.WAITING).build();
+    private final BookingDto bookingDto = BookingDto.builder()
+            .id(1L).start(LocalDateTime.now().minusHours(7L)).end(LocalDateTime.now().minusHours(5L))
+            .item(itemDto).booker(userDto).status(Status.WAITING).build();
+    private final BookingDto bookingDto1 = new BookingDto();
     Booking booking1 = new Booking();
     @Autowired
     private BookingMapper mapper;

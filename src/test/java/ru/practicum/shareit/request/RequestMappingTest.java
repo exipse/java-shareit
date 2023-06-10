@@ -25,15 +25,15 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest(classes = {RequestMappingImpl.class, UserMapperImpl.class})
 class RequestMappingTest {
 
-    User user = new User(1L, "user1", "user1@user.com");
-    UserDto userDto = new UserDto(1L, "user1", "user1@user.com");
-    LocalDateTime localDateTime = LocalDateTime.now();
-    ItemShortForRequestDto itemShortForRequestDto = new ItemShortForRequestDto(1L, "Дрель", 1L,
+    private final User user = new User(1L, "user1", "user1@user.com");
+    private final UserDto userDto = new UserDto(1L, "user1", "user1@user.com");
+    private final LocalDateTime localDateTime = LocalDateTime.now();
+    private final ItemShortForRequestDto itemShortForRequestDto = new ItemShortForRequestDto(1L, "Дрель", 1L,
             "Простая дрель", true, 1L);
-    ItemWithAnswersRequestDto itemWithAnswersRequestDto = new ItemWithAnswersRequestDto(1L, "Тумба",
+    private final ItemWithAnswersRequestDto itemWithAnswersRequestDto = new ItemWithAnswersRequestDto(1L, "Тумба",
             localDateTime, userDto, List.of(itemShortForRequestDto));
-    ItemShortForRequestDto itemShortForRequestDto1 = new ItemShortForRequestDto();
-    ItemWithAnswersRequestDto itemWithAnswersRequestDto1 = new ItemWithAnswersRequestDto();
+    private final ItemShortForRequestDto itemShortForRequestDto1 = new ItemShortForRequestDto();
+    private final ItemWithAnswersRequestDto itemWithAnswersRequestDto1 = new ItemWithAnswersRequestDto();
     @Autowired
     private RequestMapping requestMapping;
 

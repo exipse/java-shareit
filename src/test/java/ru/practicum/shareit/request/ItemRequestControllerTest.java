@@ -36,12 +36,12 @@ class ItemRequestControllerTest {
     @MockBean
     private ItemRequestServiceImpl requestService;
 
-    UserDto userDto = new UserDto(1L, "user1", "user1@user.com");
-    ItemRequestDto requestDto = new ItemRequestDto(1L, "Запрос", LocalDateTime.now(), userDto);
-    ItemShortForRequestDto itemShortForRequestDto = new ItemShortForRequestDto(1L, "Дрель", 1L,
+    private final UserDto userDto = new UserDto(1L, "user1", "user1@user.com");
+    private final ItemRequestDto requestDto = new ItemRequestDto(1L, "Запрос", LocalDateTime.now(), userDto);
+    private final ItemShortForRequestDto itemShortForRequestDto = new ItemShortForRequestDto(1L, "Дрель", 1L,
             "Простая дрель", true, 1L);
-    List<ItemShortForRequestDto> itemShortForRequestDtos = List.of(itemShortForRequestDto);
-    ItemWithAnswersRequestDto answersRequestDto = new ItemWithAnswersRequestDto(1L, "Простая дрель",
+    private final List<ItemShortForRequestDto> itemShortForRequestDtos = List.of(itemShortForRequestDto);
+    private final ItemWithAnswersRequestDto answersRequestDto = new ItemWithAnswersRequestDto(1L, "Простая дрель",
             LocalDateTime.now(), userDto, itemShortForRequestDtos);
 
     @Test

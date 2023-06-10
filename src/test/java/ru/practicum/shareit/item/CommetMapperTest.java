@@ -24,18 +24,18 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest(classes = {CommetMapperImpl.class, ItemMapperImpl.class})
 class CommetMapperTest {
 
-    LocalDateTime localDateTime = LocalDateTime.now();
-    ItemDto itemDto = new ItemDto(1L, "Дрель", "Простая дрель", true, 1L, 1L);
-    CommentDto commentDto = new CommentDto(1L, "коммент", itemDto, "user1", localDateTime);
-    Item item = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
-    User user = new User(1L, "user1", "user1@user.com");
-    Comment comment = new Comment(1L, "коммент", item, user, localDateTime);
-    CommentDto commentDto1 = new CommentDto();
-    Item item1 = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
-    User user1 = new User(1L, null, "user1@user.com");
-    Comment comment1 = new Comment(1L, "коммент", item1, user1, localDateTime);
-    Item item2 = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
-    Comment comment2 = new Comment(1L, "коммент", item2, null, localDateTime);
+    private final LocalDateTime localDateTime = LocalDateTime.now();
+    private final ItemDto itemDto = new ItemDto(1L, "Дрель", "Простая дрель", true, 1L, 1L);
+    private final CommentDto commentDto = new CommentDto(1L, "коммент", itemDto, "user1", localDateTime);
+    private final Item item = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
+    private final User user = new User(1L, "user1", "user1@user.com");
+    private final Comment comment = new Comment(1L, "коммент", item, user, localDateTime);
+    private final CommentDto commentDto1 = new CommentDto();
+    private final Item item1 = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
+    private final User user1 = new User(1L, null, "user1@user.com");
+    private final Comment comment1 = new Comment(1L, "коммент", item1, user1, localDateTime);
+    private final Item item2 = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
+    private final Comment comment2 = new Comment(1L, "коммент", item2, null, localDateTime);
     @Autowired
     private CommetMapper mapper;
 

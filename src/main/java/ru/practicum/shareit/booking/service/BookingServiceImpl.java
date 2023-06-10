@@ -1,7 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +16,8 @@ import ru.practicum.shareit.item.mapper.ItemFullMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.storage.ItemRepository;
-import ru.practicum.shareit.user.mapper.UserMapper;
+import ru.practicum.shareit.pagination.Pagination;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.time.LocalDateTime;
@@ -32,21 +30,17 @@ import java.util.Objects;
 @Transactional
 public class BookingServiceImpl implements BookingService {
 
-    private final UserService userService;
-    private final UserStorage userStorage;
     private final ItemService itemService;
+    private final UserStorage userStorage;
     private final ItemRepository itemRepository;
-    private final ItemFullMapper itemFullMapper;
-    private final UserMapper userMapper;
-    private final BookingMapper bookingMapper;
     private final BookingRepository bookingRepository;
-
+    private final ItemFullMapper itemFullMapper;
+    private final BookingMapper bookingMapper;
 
     @Override
     public BookingDto create(Long userId, BookingRequestDto book) {
-        if (!userStorage.existsById(userId)) {
-            throw new UserNoFoundException("Пользователя не существует");
-        }
+        User user = userStorage.findById(userId).orElseThrow(
+                () -> new UserNoFoundException(String.format("Пользователь по id = %s не существует", userId)));
         if (!itemRepository.existsById(book.getItemId())) {
             throw new ItemNoFoundException("Вещи не существует");
         }
@@ -54,9 +48,9 @@ public class BookingServiceImpl implements BookingService {
                 || book.getStart().equals(book.getEnd())) {
             throw new DataTimeValidateException("Указано некорректное время бронирования");
         }
-        User user = userMapper.toUserModel(userService.get(userId));
         Item item =
                 itemFullMapper.itemFulltoModel(itemService.getById(book.getItemId(), userId));
+
         if (Objects.equals(item.getOwnerId(), userId)) {
             throw new BookingNoFoundException("Владелец вещи не может забронировать свою вещь");
         }
@@ -112,8 +106,10 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public List<BookingDto> getAllBooksByUser(Long userId, String state, int from, int size) {
 
-        User userFromDB = userMapper.toUserModel(userService.get(userId));
-        Pageable pageable = PageRequest.of(from / size, size);
+        User user = userStorage.findById(userId).orElseThrow(
+                () -> new UserNoFoundException(String.format("Пользователь по id = %s не существует", userId)));
+       // Pageable pageable = PageRequest.of(from / size, size);
+        Pageable pageable = Pagination.getInfo(from,size);
         LocalDateTime timeNow = LocalDateTime.now();
 
         BookingState bookingState;
@@ -126,28 +122,28 @@ public class BookingServiceImpl implements BookingService {
 
         switch (bookingState) {
             case ALL:
-                bookings = bookingRepository.findALLUserBookings(userFromDB, pageable);
+                bookings = bookingRepository.findALLUserBookings(user, pageable);
                 break;
             case CURRENT:
                 bookings = bookingRepository
-                        .findAllByBookerAndStartIsBeforeAndEndIsAfterOrderByStartDesc(userFromDB, timeNow,
+                        .findAllByBookerAndStartIsBeforeAndEndIsAfterOrderByStartDesc(user, timeNow,
                                 timeNow, pageable);
                 break;
             case PAST:
                 bookings = bookingRepository
-                        .findAllByBookerAndEndIsBeforeOrderByStartDesc(userFromDB, timeNow, pageable);
+                        .findAllByBookerAndEndIsBeforeOrderByStartDesc(user, timeNow, pageable);
                 break;
             case FUTURE:
                 bookings = bookingRepository
-                        .findAllByBookerAndStartIsAfterOrderByStartDesc(userFromDB, timeNow, pageable);
+                        .findAllByBookerAndStartIsAfterOrderByStartDesc(user, timeNow, pageable);
                 break;
             case WAITING:
                 bookings = bookingRepository
-                        .findAllByBookerAndStatusEqualsOrderByStartDesc(userFromDB, Status.WAITING, pageable);
+                        .findAllByBookerAndStatusEqualsOrderByStartDesc(user, Status.WAITING, pageable);
                 break;
             case REJECTED:
                 bookings = bookingRepository
-                        .findAllByBookerAndStatusEqualsOrderByStartDesc(userFromDB, Status.REJECTED, pageable);
+                        .findAllByBookerAndStatusEqualsOrderByStartDesc(user, Status.REJECTED, pageable);
                 break;
         }
         return bookingMapper.toBookingListDto(bookings);
@@ -159,7 +155,7 @@ public class BookingServiceImpl implements BookingService {
         if (!userStorage.existsById(userId)) {
             throw new UserNoFoundException("Пользователя не существует");
         }
-        Pageable pageable = PageRequest.of(from / size, size);
+        Pageable pageable = Pagination.getInfo(from,size);
         LocalDateTime timeNow = LocalDateTime.now();
 
         BookingState bookingState;

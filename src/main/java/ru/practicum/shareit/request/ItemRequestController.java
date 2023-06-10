@@ -1,7 +1,7 @@
 package ru.practicum.shareit.request;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
@@ -9,6 +9,7 @@ import ru.practicum.shareit.request.dto.ItemWithAnswersRequestDto;
 import ru.practicum.shareit.request.service.ItemRequestService;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
@@ -16,14 +17,10 @@ import java.util.List;
 @RestController
 @RequestMapping(path = "/requests")
 @Validated
+@AllArgsConstructor
 public class ItemRequestController {
 
     private final ItemRequestService requestService;
-
-    @Autowired
-    public ItemRequestController(ItemRequestService requestService) {
-        this.requestService = requestService;
-    }
 
     /**
      * Добавить новый запрос вещи
@@ -50,7 +47,7 @@ public class ItemRequestController {
      */
     @GetMapping("/all")
     public List<ItemWithAnswersRequestDto> getUserRequests(@PositiveOrZero @RequestParam(defaultValue = "0") int from,
-                                                           @RequestParam(defaultValue = "10") int size,
+                                                           @Positive @RequestParam(defaultValue = "10") int size,
                                                            @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("POST /requests/all?from={}&size={}.  X-Sharer-User-Id = {}", from, size, userId);
         return requestService.getUserRequests(from, size, userId);

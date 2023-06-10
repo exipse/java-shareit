@@ -61,18 +61,15 @@ class BookingControllerTest {
 
         when(bookingService.create(anyLong(), any()))
                 .thenReturn(bookingDto);
-
         String result = mvc.perform(post("/bookings")
                         .header("X-Sharer-User-Id", "1")
                         .content(mapper.writeValueAsString(bookingRequestDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(bookingDto.getId()), Long.class))
                 .andExpect(jsonPath("$.status", is(bookingDto.getStatus().toString()))).andReturn()
                 .getResponse().getContentAsString();
-
     }
 
     @Test
@@ -80,7 +77,6 @@ class BookingControllerTest {
 
         when(bookingService.confirmOrRejectRequest(anyLong(), anyLong(), anyBoolean()))
                 .thenReturn(bookingDto);
-
         mvc.perform(patch("/bookings/1?approved=true")
                         .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -99,7 +95,6 @@ class BookingControllerTest {
     void getInfoByBook() throws Exception {
 
         when(bookingService.getInfoByBook(anyLong(), anyLong())).thenReturn(bookingDto);
-
         mvc.perform(MockMvcRequestBuilders.get("/bookings/{bookingId}", bookingDto.getId())
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -109,14 +104,12 @@ class BookingControllerTest {
                 .andExpect(jsonPath("$.status", is(bookingDto.getStatus().toString())))
                 .andExpect(jsonPath("$.item.description").value(bookingDto.getItem().getDescription()))
                 .andExpect(jsonPath("$.booker.name").value(bookingDto.getBooker().getName()));
-
     }
 
     @Test
     void getAllBooksByUser() throws Exception {
         Mockito.when(bookingService.getAllBooksByUser(anyLong(), anyString(), anyInt(), anyInt()))
                 .thenReturn(List.of(bookingDto));
-
         mvc.perform(MockMvcRequestBuilders.get("/bookings", bookingDto.getId())
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -133,7 +126,6 @@ class BookingControllerTest {
 
         Mockito.when(bookingService.getAllBooksByOwner(anyLong(), anyString(), anyInt(), anyInt()))
                 .thenReturn(List.of(bookingDto));
-
         mvc.perform(MockMvcRequestBuilders.get("/bookings/owner", bookingDto.getId())
                         .header("X-Sharer-User-Id", "1")
                         .contentType(MediaType.APPLICATION_JSON)

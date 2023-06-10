@@ -41,11 +41,11 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final CommentRepository commentRepository;
     private final BookingRepository bookingRepository;
-    private final BookingShortMapper bookingShortMapper;
     private final UserStorage userStorage;
     private final ItemMapper itemMapper;
     private final ItemFullMapper itemFullMapper;
     private final CommetMapper commetMapper;
+    private final BookingShortMapper bookingShortMapper;
 
     @Override
     public ItemDto createItem(ItemDto item, Long userId) {

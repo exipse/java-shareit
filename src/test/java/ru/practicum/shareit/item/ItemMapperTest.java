@@ -12,13 +12,12 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-
 class ItemMapperTest {
 
-    Item item1 = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
-    ItemDto itemDto1 = new ItemDto(1L, "Дрель", "Простая дрель",
+    private final Item item1 = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
+    private final ItemDto itemDto1 = new ItemDto(1L, "Дрель", "Простая дрель",
             true, 1L, 1L);
-    ItemShortForRequestDto itemShortForRequestDto = new ItemShortForRequestDto(1L, "Дрель", 1L,
+    private final ItemShortForRequestDto itemShortForRequestDto = new ItemShortForRequestDto(1L, "Дрель", 1L,
             "Простая дрель", true, 1L);
     private final ItemMapper mapper
             = Mappers.getMapper(ItemMapper.class);

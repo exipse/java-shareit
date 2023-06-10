@@ -11,8 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 class ItemFullMapperTest {
 
-    Item item1 = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
-    ItemFullDto itemFullDto1 = ItemFullDto.builder()
+    private final Item item1 = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
+    private final ItemFullDto itemFullDto1 = ItemFullDto.builder()
             .id(1L)
             .name("Дрель")
             .description("Простая дрель")

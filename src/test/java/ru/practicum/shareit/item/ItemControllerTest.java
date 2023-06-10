@@ -43,27 +43,27 @@ class ItemControllerTest {
     @MockBean
     private ValidateService validateService;
 
-    ItemDto itemDto = new ItemDto(1L, "Instrument", "Just Instrument", true, 1L, 1L);
-    CommentDto comment = new CommentDto(1L, "Comment", itemDto, "user1", LocalDateTime.now());
-    CommentDto comment1 = CommentDto.builder()
+    private final ItemDto itemDto = new ItemDto(1L, "Instrument", "Just Instrument", true, 1L, 1L);
+    private final CommentDto comment = new CommentDto(1L, "Comment", itemDto, "user1", LocalDateTime.now());
+    private final CommentDto comment1 = CommentDto.builder()
             .text("Comment")
             .build();
 
-    BookingShortDto bookingShortDto1 = BookingShortDto.builder()
+    private final BookingShortDto bookingShortDto1 = BookingShortDto.builder()
             .id(1L)
             .start(LocalDateTime.now().minusHours(7L))
             .end(LocalDateTime.now().minusHours(5L))
             .bookerId(1L).build();
 
-    BookingShortDto bookingShortDto2 = BookingShortDto.builder()
+    private final BookingShortDto bookingShortDto2 = BookingShortDto.builder()
             .id(2L)
             .start(LocalDateTime.now().plusHours(5L))
             .end(LocalDateTime.now().plusHours(7L))
             .bookerId(1L).build();
 
-    List<CommentDto> commentListDto = List.of(comment);
+    private final List<CommentDto> commentListDto = List.of(comment);
 
-    ItemFullDto fullDto = ItemFullDto.builder()
+    private final ItemFullDto fullDto = ItemFullDto.builder()
             .id(1L)
             .name("Дрель")
             .description("Description")

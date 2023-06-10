@@ -24,8 +24,8 @@ class ItemRepositoryTest {
     ItemRepository itemRepository;
     @Autowired
     UserStorage userStorage;
-    User user;
-    Item item;
+    private User user;
+    private Item item;
 
     @BeforeEach
     void before() {
@@ -36,14 +36,12 @@ class ItemRepositoryTest {
         itemRepository.save(item);
     }
 
-
     @Test
     void findAllByOwnerIdOrderById() {
 
         List<Item> itemList = itemRepository.findAllByOwnerIdOrderById(1L);
         assertEquals(1, itemList.size());
     }
-
 
     @Test
     void seachAll() {

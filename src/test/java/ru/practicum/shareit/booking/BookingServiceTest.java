@@ -69,27 +69,28 @@ class BookingServiceTest {
     @Mock
     private ItemMapper itemMapper;
 
-    User user1;
-    UserDto userDto1;
+    private User user1;
+    private UserDto userDto1;
 
-    Item item1;
-    ItemDto itemDto1;
-    ItemFullDto itemFullDto1;
+    private Item item1;
+    private ItemDto itemDto1;
+    private ItemFullDto itemFullDto1;
 
-    Booking booking1;
-    BookingDto bookingDto1;
-    BookingRequestDto bookingRequestDto;
+    private Booking booking1;
+    private BookingDto bookingDto1;
+    private BookingRequestDto bookingRequestDto;
 
-    BookingShortDto bookingShortDto1;
+    private BookingShortDto bookingShortDto1;
 
     @BeforeEach
     void before() {
-        user1 = new User(1L, "user1", "user1@user.com");
-        userDto1 = new UserDto(1L, "user1", "user1@user.com");
+        user1 = User.builder().id(1L).name("user1").email("user1@user.com").build();
+        userDto1 = UserDto.builder().id(1L).name("user1").email("user1@user.com").build();
 
-        item1 = new Item(1L, "Дрель", "Простая дрель", true, 1L, 1L);
-        itemDto1 = new ItemDto(1L, "Дрель", "Простая дрель", true,
-                1L, 1L);
+        item1 = Item.builder().id(1L).name("Дрель").description("Простая дрель")
+                .available(true).ownerId(1L).build();
+        itemDto1 = ItemDto.builder()
+                .id(1L).name("Дрель").description("Простая дрель").available(true).ownerId(1L).requestId(1L).build();
 
         booking1 = Booking.builder()
                 .id(1L)
@@ -146,7 +147,7 @@ class BookingServiceTest {
     @Test
     void createBooksWithNoExistItem() {
         when(userStorage.findById(anyLong())).thenReturn(Optional.of(user1));
-        when(itemRepository.findById(anyLong())).thenThrow(new ItemNoFoundException("Вещи не существует"));
+        when(itemRepository.existsById(anyLong())).thenThrow(new ItemNoFoundException("Вещи не существует"));
         ItemNoFoundException exception = assertThrows(ItemNoFoundException.class,
                 () -> bookingService.create(2L, bookingRequestDto));
         assertEquals("Вещи не существует", exception.getMessage());
@@ -155,6 +156,7 @@ class BookingServiceTest {
     @Test
     void createBooksWithNoCorrectDateTime() {
         when(userStorage.findById(anyLong())).thenReturn(Optional.of(user1));
+        when(itemRepository.existsById(anyLong())).thenReturn(true);
         when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
         BookingRequestDto errorDate = BookingRequestDto.builder()
                 .itemId(2L)
@@ -168,8 +170,9 @@ class BookingServiceTest {
 
     @Test
     void createBooksWhenOwnerItemWantstoBookHisOwnItem() {
+        when(userStorage.existsById(anyLong())).thenReturn(true);
+        when(itemRepository.existsById(anyLong())).thenReturn(true);
         when(userStorage.findById(anyLong())).thenReturn(Optional.of(user1));
-        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
 
         when(userService.get(anyLong())).thenReturn(userDto1);
         when(itemService.getById(anyLong(), anyLong())).thenReturn(itemFullDto1);
@@ -185,14 +188,10 @@ class BookingServiceTest {
 
         Item itemNoAvailable
                 = new Item(1L, "Дрель", "Простая дрель", false, 2L, 1L);
-
         when(userStorage.findById(anyLong())).thenReturn(Optional.of(user1));
-        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
-
-        when(userService.get(anyLong())).thenReturn(userDto1);
+        when(itemRepository.existsById(anyLong())).thenReturn(true);
         when(itemService.getById(anyLong(), anyLong())).thenReturn(itemFullDto1);
-
-        Mockito.when(itemFullMapper.itemFulltoModel(itemFullDto1)).thenReturn(itemNoAvailable);
+        when(itemFullMapper.itemFulltoModel(itemFullDto1)).thenReturn(itemNoAvailable);
 
         NoAvailableException exception = assertThrows(NoAvailableException.class,
                 () -> bookingService.create(1L, bookingRequestDto));
@@ -203,8 +202,7 @@ class BookingServiceTest {
     @Test
     void createBooks() {
         when(userStorage.findById(anyLong())).thenReturn(Optional.of(user1));
-        when(itemRepository.findById(anyLong())).thenReturn(Optional.of(item1));
-        when(userService.get(anyLong())).thenReturn(userDto1);
+        when(itemRepository.existsById(anyLong())).thenReturn(true);
         when(itemService.getById(anyLong(), anyLong())).thenReturn(itemFullDto1);
         when(bookingRepository.save(any())).thenReturn(booking1);
         when(bookingMapper.toBookingDto(booking1)).thenReturn(bookingDto1);
@@ -214,8 +212,8 @@ class BookingServiceTest {
 
     @Test
     void getInfoByBookingWhenBookingNoExist() {
-        when(userStorage.findById(anyLong())).thenReturn(Optional.of(user1));
-        when(bookingRepository.findById(anyLong()))
+        when(userStorage.existsById(anyLong())).thenReturn(true);
+        when(bookingRepository.existsById(anyLong()))
                 .thenThrow(new BookingNoFoundException("Бронирования не существует"));
 
         BookingNoFoundException exception = assertThrows(BookingNoFoundException.class,
@@ -225,9 +223,8 @@ class BookingServiceTest {
 
     @Test
     void getInfoByBookingWhenUserNotOwner() {
-        when(userStorage.findById(anyLong())).thenReturn(Optional.of(user1));
-        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking1));
-
+        when(userStorage.existsById(anyLong())).thenReturn(true);
+        when(bookingRepository.existsById(anyLong())).thenReturn(true);
         UserNoFoundException exception = assertThrows(UserNoFoundException.class,
                 () -> bookingService.getInfoByBook(1L, 5L));
         assertEquals("Пользователь не является автором бронирования или владельцем",
@@ -236,8 +233,8 @@ class BookingServiceTest {
 
     @Test
     void getInfoByBook() {
-        when(userStorage.findById(anyLong())).thenReturn(Optional.of(user1));
-        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking1));
+        when(userStorage.existsById(anyLong())).thenReturn(true);
+        when(bookingRepository.existsById(anyLong())).thenReturn(true);
         when(bookingRepository.checkInfoByBook(anyLong(), anyLong())).thenReturn(Optional.of(booking1));
         when(bookingMapper.toBookingDto(booking1)).thenReturn(bookingDto1);
 
@@ -246,8 +243,8 @@ class BookingServiceTest {
 
     @Test
     void confirmOrRejectRequestWhenUserNotOwner() {
-        when(userStorage.findById(anyLong())).thenReturn(Optional.of(user1));
-        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking1));
+        when(userStorage.existsById(anyLong())).thenReturn(true);
+        when(bookingRepository.existsById(anyLong())).thenReturn(true);
         when(bookingRepository.checkInfoByBook(anyLong(), anyLong())).thenReturn(Optional.of(booking1));
         when(bookingMapper.toBookingDto(booking1)).thenReturn(bookingDto1);
 
@@ -260,9 +257,8 @@ class BookingServiceTest {
 
     @Test
     void rejectRequest() {
-
-        when(userStorage.findById(anyLong())).thenReturn(Optional.of(user1));
-        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking1));
+        when(userStorage.existsById(anyLong())).thenReturn(true);
+        when(bookingRepository.existsById(anyLong())).thenReturn(true);
         when(bookingRepository.checkInfoByBook(anyLong(), anyLong())).thenReturn(Optional.of(booking1));
         when(bookingMapper.toBookingDto(booking1)).thenReturn(bookingDto1);
 
@@ -274,8 +270,8 @@ class BookingServiceTest {
     @Test
     void confirmRequest() {
 
-        when(userStorage.findById(anyLong())).thenReturn(Optional.of(user1));
-        when(bookingRepository.findById(anyLong())).thenReturn(Optional.of(booking1));
+        when(userStorage.existsById(anyLong())).thenReturn(true);
+        when(bookingRepository.existsById(anyLong())).thenReturn(true);
         when(bookingRepository.checkInfoByBook(anyLong(), anyLong())).thenReturn(Optional.of(booking1));
         when(bookingMapper.toBookingDto(booking1)).thenReturn(bookingDto1);
 
@@ -294,7 +290,7 @@ class BookingServiceTest {
             "REJECTED"
     })
     void getAllBooksByUser(String state) {
-        when(userService.get(anyLong())).thenReturn(userDto1);
+        when(userStorage.findById(anyLong())).thenReturn(Optional.ofNullable(user1));
         when(bookingRepository.findALLUserBookings(any(), any())).thenReturn(List.of(booking1));
         when(bookingRepository.findAllByBookerAndStartIsBeforeAndEndIsAfterOrderByStartDesc(any(), any(), any(), any()))
                 .thenReturn(List.of(booking1));
@@ -322,7 +318,7 @@ class BookingServiceTest {
             "REJECTED",
     })
     void getAllBooksByOwner(String state) {
-        when(userService.get(anyLong())).thenReturn(userDto1);
+        when(userStorage.existsById(anyLong())).thenReturn(true);
         when(bookingRepository.findAllByBookerAll(anyLong(), any())).thenReturn(List.of(booking1));
         when(bookingRepository.findCurrentBookingsByOwner(anyLong(), any(), any(), any()))
                 .thenReturn(List.of(booking1));
@@ -336,15 +332,13 @@ class BookingServiceTest {
 
         when((bookingMapper.toBookingListDto(List.of(booking1)))).thenReturn(List.of(bookingDto1));
 
-
         List<BookingDto> bookings = bookingService.getAllBooksByOwner(1L, state, 0, 10);
         assertEquals(bookings.get(0).getId(), 1L);
-
     }
 
     @Test
     void getUnsupportedState() {
-        when(userService.get(anyLong())).thenReturn(userDto1);
+        when(userStorage.existsById(anyLong())).thenReturn(true);
         UnsupportedException exception = assertThrows(UnsupportedException.class,
                 () -> bookingService.getAllBooksByOwner(1L, "wrong", 0, 10));
 
