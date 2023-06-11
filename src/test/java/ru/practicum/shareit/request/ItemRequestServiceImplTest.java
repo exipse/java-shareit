@@ -56,7 +56,7 @@ class ItemRequestServiceImplTest {
     private ItemMapper itemMapper;
 
     @InjectMocks
-    ItemRequestServiceImpl requestService;
+    private ItemRequestServiceImpl requestService;
 
     private Item item;
     private ItemDto itemDto;

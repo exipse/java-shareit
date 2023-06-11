@@ -42,13 +42,6 @@ public class ExceptionController {
         return new ErrorResponse(HttpStatus.FORBIDDEN.getReasonPhrase(), e.getMessage());
     }
 
-//    @ExceptionHandler
-//    @ResponseStatus(HttpStatus.CONFLICT)
-//    public ErrorResponse dbconstrainException(final DBConstraintException e) {
-//        log.error(e.getMessage());
-//        return new ErrorResponse(HttpStatus.CONFLICT.getReasonPhrase(), e.getMessage());
-//    }
-
     @ExceptionHandler({DataIntegrityViolationException.class, DBConstraintException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse dbconstrainException(final Exception e) {

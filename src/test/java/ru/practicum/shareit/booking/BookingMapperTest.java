@@ -41,7 +41,7 @@ class BookingMapperTest {
             .id(1L).start(LocalDateTime.now().minusHours(7L)).end(LocalDateTime.now().minusHours(5L))
             .item(itemDto).booker(userDto).status(Status.WAITING).build();
     private final BookingDto bookingDto1 = new BookingDto();
-    Booking booking1 = new Booking();
+    private Booking booking1 = new Booking();
     @Autowired
     private BookingMapper mapper;
 

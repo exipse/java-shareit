@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class ItemRequestServiceImpl implements ItemRequestService {
 
     private final UserStorage userStorage;
@@ -36,6 +36,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     private final ItemMapper itemMapper;
 
     @Override
+    @Transactional
     public ItemRequestDto addNewRequest(ItemRequestDto requestDto, Long userId) {
         User user = userStorage.findById(userId).orElseThrow(
                 () -> new UserNoFoundException(String.format("Пользователь по id = %s не существует", userId)));
@@ -49,7 +50,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ItemWithAnswersRequestDto> getOwnRequests(Long userId) {
         if (!userStorage.existsById(userId)) {
             throw new UserNoFoundException(String.format("Пользователь по id = %s не существует", userId));
@@ -63,7 +63,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ItemWithAnswersRequestDto> getUserRequests(int from, int size, Long userId) {
         if (!userStorage.existsById(userId)) {
             throw new UserNoFoundException(String.format("Пользователь по id = %s не существует", userId));
@@ -78,7 +77,6 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public ItemWithAnswersRequestDto getRequestById(Long requestId, Long userId) {
         ItemRequest requestInDb = requestStorage.findById(requestId).orElseThrow(() ->
                 new RequestNoFoundException(String.format("Запроса по id = %s не существует", requestId)));

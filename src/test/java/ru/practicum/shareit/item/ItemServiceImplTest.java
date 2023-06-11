@@ -64,7 +64,7 @@ class ItemServiceImplTest {
     private BookingShortMapper bookingShortMapper;
 
     @InjectMocks
-    ItemServiceImpl itemService;
+    private ItemServiceImpl itemService;
 
     private Item item1;
     private ItemDto itemDto1;

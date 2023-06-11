@@ -10,12 +10,11 @@ import ru.practicum.shareit.user.dto.UserDto;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-
 @ExtendWith(MockitoExtension.class)
 class ValidateServiceTest {
 
     @InjectMocks
-    ValidateService validateService;
+    private ValidateService validateService;
 
     UserDto userDto = new UserDto(1L, "", "user1@user.com");
 

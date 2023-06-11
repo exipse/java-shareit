@@ -35,16 +35,16 @@ import static org.mockito.Mockito.when;
 class UserServiceImplTest {
 
     @Mock
-    UserStorage userStorage;
+    private UserStorage userStorage;
     @Mock
-    UserMapper userMapper;
+    private UserMapper userMapper;
     @Mock
-    UserListMapper userListMapper;
+    private UserListMapper userListMapper;
     @Mock
-    ValidateService validateService;
+    private ValidateService validateService;
 
     @InjectMocks
-    UserServiceImpl userService;
+    private UserServiceImpl userService;
 
     private UserDto userDto1;
     private UserDto userDto2;
