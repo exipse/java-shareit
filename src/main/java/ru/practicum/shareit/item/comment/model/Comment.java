@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item.comment.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.model.Item;
@@ -11,14 +12,15 @@ import java.time.LocalDateTime;
 @Data
 @Entity
 @Table(name = "COMMENTS", schema = "public")
+@AllArgsConstructor
 @NoArgsConstructor
 public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column(name = "text")
-    String text;
+    private String text;
 
     @ManyToOne
     @JoinColumn(name = "item_id", nullable = false)

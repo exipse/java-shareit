@@ -1,11 +1,15 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Table(name = "ITEMS", schema = "public")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class Item {
 
@@ -26,5 +30,5 @@ public class Item {
     private Long ownerId;
 
     @Column(name = "request_id")
-    private int request;
+    private Long requestId;
 }

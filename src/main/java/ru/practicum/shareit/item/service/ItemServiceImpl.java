@@ -3,10 +3,8 @@ package ru.practicum.shareit.item.service;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.enums.Status;
-import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.mapper.BookingShortMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -25,7 +23,6 @@ import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
 import ru.practicum.shareit.user.storage.UserStorage;
 
 import java.time.LocalDateTime;
@@ -38,22 +35,19 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @AllArgsConstructor
+@Transactional
 public class ItemServiceImpl implements ItemService {
 
     private final ItemRepository itemRepository;
-    private final UserService userService;
     private final CommentRepository commentRepository;
     private final BookingRepository bookingRepository;
-    private final BookingMapper bookingMapper;
-    private final BookingShortMapper bookingShortMapper;
     private final UserStorage userStorage;
     private final ItemMapper itemMapper;
     private final ItemFullMapper itemFullMapper;
     private final CommetMapper commetMapper;
-
+    private final BookingShortMapper bookingShortMapper;
 
     @Override
-    @Transactional
     public ItemDto createItem(ItemDto item, Long userId) {
 
         User user = userStorage.findById(userId)
@@ -62,11 +56,9 @@ public class ItemServiceImpl implements ItemService {
         Item storageItem = itemRepository.save(itemMapper.toItemModel(item));
         log.info("Вещь сохранена");
         return itemMapper.toItemDto(storageItem);
-
     }
 
     @Override
-    @Transactional
     public ItemDto updateItem(Long itemId, Long userId, ItemDto item) {
 
         Item itemFromDB = itemRepository.findById(itemId)
@@ -91,11 +83,11 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRED)
+    @Transactional(readOnly = true)
     public ItemFullDto getById(Long itemId, Long userId) {
-        User user = userStorage.findById(userId)
-                .orElseThrow(() -> new UserNoFoundException("Пользователя не существует"));
-
+        if (!userStorage.existsById(userId)) {
+            throw new UserNoFoundException("Пользователя не существует");
+        }
         Optional<Item> itemFromRepository = itemRepository.findById(itemId);
         if (!itemFromRepository.isPresent()) {
             throw new ItemNoFoundException(String.format("Вещь по id %s не найдена", itemId));
@@ -125,11 +117,10 @@ public class ItemServiceImpl implements ItemService {
         log.info(String.format("Вещь по id = %s получена", itemId));
 
         return itemdto;
-
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ItemFullDto> getAllItemsByUser(Long userId) {
         List<ItemFullDto> userItems = itemRepository.findAllByOwnerIdOrderById(userId)
                 .stream().map(itemFullMapper::itemFulltoDto).collect(Collectors.toList());
@@ -141,7 +132,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ItemDto> search(String text) {
         if (text.isBlank()) {
             return Collections.EMPTY_LIST;
@@ -152,7 +143,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional
     public CommentDto addComment(Long userId, CommentDto commentDto, Long itemId) {
         User user = userStorage.findById(userId)
                 .orElseThrow(() -> new UserNoFoundException("Пользователя не существует"));
@@ -172,8 +162,6 @@ public class ItemServiceImpl implements ItemService {
         } else {
             throw new NoAvailableException("Пользователь не арендовал  вещь или аренда не закончена");
         }
-
     }
-
 
 }
