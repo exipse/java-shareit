@@ -24,13 +24,13 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
       - DB_HOST=db
-      - DB_PORT=8888
+      - DB_PORT=6541
 
   db:
     image: postgres:13.7-alpine
     container_name: shareit-postgres
     ports:
-      - "8888:5432"
+      - "6541:5432"
     environment:
         - POSTGRES_DB=shareit
         - POSTGRES_USER=root
