@@ -24,7 +24,7 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=root
       - DB_HOST=db
-      - DB_PORT=6541
+      - DB_PORT=5432
 
   db:
     image: postgres:13.7-alpine
