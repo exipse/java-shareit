@@ -74,10 +74,6 @@
 			<artifactId>lombok-mapstruct-binding</artifactId>
 			<version>${lombok-mapstruct-binding.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>jakarta.validation</groupId>
-			<artifactId>jakarta.validation-api</artifactId>
-		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -119,14 +115,6 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
-<!--			<plugin>-->
-<!--				<artifactId>maven-surefire-plugin</artifactId>-->
-<!--				<version>3.0.0-M7</version>-->
-<!--			</plugin>-->
-<!--			<plugin>-->
-<!--				<artifactId>maven-failsafe-plugin</artifactId>-->
-<!--				<version>3.0.0-M7</version>-->
-<!--			</plugin>-->
 
 		</plugins>
 	</build>
